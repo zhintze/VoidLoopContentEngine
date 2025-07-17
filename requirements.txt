@@ -1,0 +1,18 @@
+# Core engine
+openai
+typer
+pydantic
+jinja2
+aiohttp
+apscheduler
+
+# Optional: trend scraping
+pytrends
+
+# Optional: web app / API preview
+fastapi
+
+# Development & formatting
+black
+ruff
+pytest

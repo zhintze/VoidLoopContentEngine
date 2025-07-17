@@ -19,9 +19,9 @@ This project aims to automate the creation, formatting, and distribution of high
 ---
 
 ## Folder Structure
-
+```
 VoidLoopContentEngine/
-├── config/ # Static configuration files, one per account
+├── config/ # Static configuration files, one per account 
 ├── data/ # Persistent or historical content data
 ├── diagrams/ # System design diagrams (e.g., domain model, use cases)
 ├── models/ # Core data schemas and classes (Account, Template, Output)
@@ -29,3 +29,4 @@ VoidLoopContentEngine/
 ├── templates/ # Content templates per account and format
 ├── main.py # Entry point CLI for generating or scheduling content
 ├── requirements.txt
+```

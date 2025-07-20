@@ -16,3 +16,4 @@ fastapi
 black
 ruff
 pytest
+pex

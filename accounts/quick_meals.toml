@@ -1,0 +1,6 @@
+name = "quick_meals"
+site = "https://quickmeals.example.com"
+social_handles = { instagram = "@quickmeals", pinterest = "quickmeals" }
+keywords = ["fast", "easy", "weeknight"]
+tone = "friendly"
+hashtags = ["#quickmeals", "#easyrecipes"]

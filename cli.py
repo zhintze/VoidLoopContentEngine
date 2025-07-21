@@ -3,6 +3,8 @@ import toml
 from pathlib import Path
 from datetime import datetime
 from models.account import Account
+from factories.output_factory import OutputFactory
+
 
 app = typer.Typer()
 
@@ -14,6 +16,7 @@ OUTPUT_DIR = Path("output")
 def new_account(
         name: str,
         site: str,
+        template_id: str = "recipe",
         instagram: str = "",
         pinterest: str = "",
         keywords: str = "",
@@ -23,7 +26,9 @@ def new_account(
     """Create a new account TOML config."""
     account_path = ACCOUNTS_DIR / f"{name}.toml"
     data = {
+        "account_id": name,
         "name": name,
+        "template_id": template_id,  # default for now; consider making this a CLI option
         "site": site,
         "social_handles": {
             "instagram": instagram,
@@ -32,6 +37,9 @@ def new_account(
         "keywords": keywords.split(","),
         "tone": tone,
         "hashtags": hashtags.split(","),
+        "outputs": [],
+        "post_queue": [],
+        "log_entries": [],
     }
     ACCOUNTS_DIR.mkdir(exist_ok=True)
     with open(account_path, "w") as f:
@@ -70,12 +78,12 @@ def run_account(account_name: str):
         typer.echo(f"Failed to load account: {e}")
         raise typer.Exit(code=1)
 
-    today = datetime.now().strftime("%Y-%m-%d")
-    out_path = OUTPUT_DIR / today / account_name
-    out_path.mkdir(parents=True, exist_ok=True)
-
-    typer.echo(f" Would now generate content using template: {account.template_id}")
-    typer.echo(f"📝 Would save output to: {out_path}")
+    try:
+        factory = OutputFactory(account)
+        factory.run()
+    except Exception as e:
+        typer.echo(f"Error during content generation: {e}")
+        raise typer.Exit(code=1)
 
 if __name__ == "__main__":
     app()

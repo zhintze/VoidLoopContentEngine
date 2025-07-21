@@ -5,11 +5,15 @@ from jinja2 import Template
 from models.account import Account
 import json
 
+from template_loader import load_template_config
+
+
 class OutputFactory:
     def __init__(self, account: Account):
         self.account = account
         self.template_path = Path("templates") / f"{account.template_id}.j2"
         self.output_dir = Path("output") / datetime.now().strftime("%Y-%m-%d") / account.name
+        self.template = load_template_config(account.template_id)
 
     def load_template(self) -> Template:
         if not self.template_path.exists():
@@ -25,8 +29,22 @@ class OutputFactory:
         )
 
     def call_gpt(self, prompt: str) -> str:
-        # Stub for now; replace with OpenAI call or other generator
-        return f"[Mock GPT output based on prompt: {prompt}]"
+        import openai
+        import os
+
+        openai.api_key = os.getenv("OPENAI_API_KEY")
+
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are a helpful food blogger."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=self.template.temperature,
+            max_tokens=1000,
+        )
+        return response.choices[0].message["content"]
+
 
     def format_output(self, gpt_output: str) -> dict:
         return {

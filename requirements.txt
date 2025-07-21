@@ -9,6 +9,9 @@ apscheduler
 # Optional: trend scraping
 pytrends
 
+#Open AI
+tiktoken
+
 # Optional: web app / API preview
 fastapi
 

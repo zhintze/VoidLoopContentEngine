@@ -75,8 +75,7 @@ Enhance content relevance with search trend data per account.
 ## 5. Static Site Integration
 
 **Tools:**
-- Astro (default)
-- Hugo (optional)
+- Astro
 
 **Function:**
 - Renders Markdown as static blog

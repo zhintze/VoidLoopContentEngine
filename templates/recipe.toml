@@ -1,0 +1,12 @@
+id = "recipe"
+name = "Quick Meal Recipe"
+description = "Generates short, fast weeknight recipes."
+temperature = 0.7
+model = "gpt-3.5-turbo"  # ✅ or gpt-4, gpt-4-turbo
+
+[schedule]
+frequency = "daily"
+time = "07:00"
+days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+timezone = "America/New_York"
+max_post_per_day = 1

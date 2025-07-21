@@ -4,6 +4,9 @@ from pathlib import Path
 from datetime import datetime
 from models.account import Account
 from factories.output_factory import OutputFactory
+from dotenv import load_dotenv
+load_dotenv()
+
 
 
 app = typer.Typer()
@@ -44,7 +47,7 @@ def new_account(
     ACCOUNTS_DIR.mkdir(exist_ok=True)
     with open(account_path, "w") as f:
         toml.dump(data, f)
-    typer.echo(f"✅ Created account: {account_path}")
+    typer.echo(f"Created account: {account_path}")
 
 @app.command()
 def schedule_post(account: str, template: str, day: str, time: str):
@@ -64,7 +67,10 @@ def schedule_post(account: str, template: str, day: str, time: str):
     typer.echo(f"Scheduled post for {account} on {day} at {time}")
 
 @app.command()
-def run_account(account_name: str):
+def run_account(
+        account_name: str,
+        offline: bool = typer.Option(False, "--offline", help="Run without calling the OpenAI API")
+):
     """Run the full content generation flow for a given account."""
     account_path = ACCOUNTS_DIR / f"{account_name}.toml"
     if not account_path.exists():
@@ -73,13 +79,14 @@ def run_account(account_name: str):
 
     try:
         account = Account.from_toml(str(account_path))
-        typer.echo(f"✅ Loaded account: {account.name}")
+        typer.echo(f"Loaded account: {account.name}")
     except Exception as e:
         typer.echo(f"Failed to load account: {e}")
         raise typer.Exit(code=1)
 
     try:
-        factory = OutputFactory(account)
+        typer.echo(f"testing account: {account.name}")
+        factory = OutputFactory(account, offline=offline)  # pass flag
         factory.run()
     except Exception as e:
         typer.echo(f"Error during content generation: {e}")

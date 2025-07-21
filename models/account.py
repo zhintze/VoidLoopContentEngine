@@ -48,6 +48,9 @@ class Account(BaseModel):
 
     def save_to_toml(self, path: str):
         import toml
+        data = self.dict(
+            exclude={"outputs", "post_queue", "log_entries"}  # skip volatile content
+        )
         with open(path, "w") as f:
-            toml.dump(self.dict(), f)
+            toml.dump(data, f)
 

@@ -17,3 +17,4 @@ black
 ruff
 pytest
 pex
+toml

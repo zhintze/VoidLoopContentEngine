@@ -9,3 +9,10 @@ account = "quick_meals"
 template = "quote"
 day = "Wednesday"
 time = "14:00"
+
+[[posts]]
+account = "quick_meals"
+template = "recipe"
+day = "Monday"
+time = "11:02"
+

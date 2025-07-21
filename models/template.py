@@ -7,6 +7,7 @@ class Template(BaseModel):
     name: str
     description: str
     temperature: float
+    model: str
     #output_targets: str
     #prompt_structure: Dict[str, str]
     #content_layout: Dict[str, Any]

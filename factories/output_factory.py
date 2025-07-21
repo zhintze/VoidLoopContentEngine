@@ -1,4 +1,4 @@
-
+from http.cookiejar import debug
 from pathlib import Path
 from datetime import datetime
 
@@ -14,8 +14,9 @@ from template_loader import load_template_config
 
 
 class OutputFactory:
-    def __init__(self, account: Account):
+    def __init__(self, account: Account,offline: bool = False):
         self.account = account
+        self.offline = offline
         self.template_path = Path("templates") / f"{account.template_id}.j2"
         self.output_dir = Path("output") / datetime.now().strftime("%Y-%m-%d") / account.name
         self.template = load_template_config(account.template_id)
@@ -50,13 +51,13 @@ class OutputFactory:
                 {"role": "user", "content": str(prompt)}
             ]
             response = client.chat.completions.create(
-                model="gpt-4",
+                model=self.template.model,
                 messages=messages,
                 temperature=self.template.temperature,
                 max_tokens=1000,
             )
         except Exception as e:
-            print("❌ GPT call failed:")
+            print("GPT call failed:")
             print(e)
             raise
 
@@ -101,7 +102,18 @@ class OutputFactory:
 
     def run(self):
         prompt = self.generate_prompt()
-        gpt_output, usage = self.call_gpt(prompt)
+        if self.offline:
+            print(" Offline mode enabled — skipping GPT call.")
+            gpt_output = "[OFFLINE MODE] This is a placeholder output.\n\n" + prompt
+            usage = {
+                "prompt_tokens": len(prompt.split()),
+                "completion_tokens": 0,
+                "total_tokens": len(prompt.split()),
+                "model": "offline",
+                "estimated_cost_usd": 0.0
+            }
+        else:
+            gpt_output, usage = self.call_gpt(prompt)
         formatted = self.format_output(gpt_output, usage)
         print("=== Saving output ===")
         print("MARKDOWN PREVIEW:")
@@ -109,4 +121,4 @@ class OutputFactory:
         print("DEBUG PREVIEW:")
         print(json.dumps(formatted["debug"], indent=2)[:300])
         self.save_output(formatted)
-        print(f"✅Output saved to {self.output_dir}")
+        print(f"Output saved to {self.output_dir}")

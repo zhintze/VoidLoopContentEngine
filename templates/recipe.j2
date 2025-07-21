@@ -1,0 +1,9 @@
+Write a {{ tone }} recipe blog post about a quick meal idea.
+
+Keywords to include:
+{% for kw in keywords %}
+- {{ kw }}
+{% endfor %}
+
+Hashtags:
+{{ hashtags | join(" ") }}

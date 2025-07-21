@@ -1,6 +1,14 @@
+account_id = "quick_meals"
 name = "quick_meals"
-site = "https://quickmeals.example.com"
-social_handles = { instagram = "@quickmeals", pinterest = "quickmeals" }
-keywords = ["fast", "easy", "weeknight"]
-tone = "friendly"
-hashtags = ["#quickmeals", "#easyrecipes"]
+template_id = "recipe"
+site = "https://quickmeals.com"
+keywords = [ "fast", "easy",]
+tone = "neutral"
+hashtags = [ "#quick", "#easyrecipes",]
+outputs = []
+post_queue = []
+log_entries = []
+
+[social_handles]
+instagram = ""
+pinterest = ""

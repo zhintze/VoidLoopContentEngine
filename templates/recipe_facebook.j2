@@ -1,0 +1,31 @@
+Create an engaging Facebook post for a recipe sharing.
+
+Style: {{ tone }}, community-focused, conversational 
+Target: Home cooks and food enthusiasts looking for {{ keywords | join(", ") }} meal ideas
+Format: Hook + recipe description + community engagement + call to action
+Length: 400-500 characters for optimal Facebook reach
+Include: Recipe benefits, cooking tips, and community questions
+
+Keywords to naturally include:
+{% for kw in keywords %}
+- {{ kw }}
+{% endfor %}
+
+Facebook Optimization Strategy:
+- Start with an attention-grabbing question or statement
+- Include recipe name and key selling points
+- Add 1-2 cooking tips or ingredient highlights
+- Create engagement with questions like "What's your favorite variation?"
+- Mention time savings, health benefits, or family-friendly aspects
+- End with a call to action (try it, share your results, tag friends)
+
+Community Engagement:
+- Ask followers to share their variations
+- Encourage comments about favorite ingredients
+- Invite people to tag friends who would love this recipe
+- Request photo shares of their attempts
+
+Hashtags (use 3-5 relevant ones):
+{{ hashtags | join(" ") }} #homecooking #recipe #foodie #cooking
+
+Focus on building community and encouraging interaction through comments and shares.

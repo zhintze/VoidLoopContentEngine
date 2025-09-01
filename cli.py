@@ -7,6 +7,8 @@ from factories.output_factory import OutputFactory
 from dotenv import load_dotenv
 from services.instagram_api import InstagramAPIConfig
 from services.pinterest_api import PinterestAPIConfig
+from services.facebook_api import FacebookAPIConfig
+from services.twitter_api import TwitterAPIConfig
 import os
 load_dotenv()
 
@@ -48,6 +50,13 @@ def new_account(
             "instagram_page_id": None,
             "pinterest_access_token": None,
             "pinterest_board_name": "Recipes",
+            "facebook_access_token": None,
+            "facebook_page_id": None,
+            "twitter_bearer_token": None,
+            "twitter_api_key": None,
+            "twitter_api_secret": None,
+            "twitter_access_token": None,
+            "twitter_access_token_secret": None,
             "default_image_url": None
         },
         "outputs": [],
@@ -80,7 +89,7 @@ def schedule_post(account: str, template: str, day: str, time: str):
 @app.command()
 def run_account(
         account_name: str,
-        platform: str = typer.Option("blog", help="Platform to generate for: blog, instagram, pinterest"),
+        platform: str = typer.Option("blog", help="Platform to generate for: blog, instagram, pinterest, facebook, twitter"),
         offline: bool = typer.Option(False, "--offline", help="Run without calling the OpenAI API"),
         auto_post: bool = typer.Option(False, "--auto-post", help="Automatically post to the platform")
 ):
@@ -109,11 +118,18 @@ def run_account(
 @app.command()
 def set_credentials(
     account_name: str,
-    platform: str = typer.Option(None, help="Platform: instagram or pinterest"),
+    platform: str = typer.Option(None, help="Platform: instagram, pinterest, facebook, or twitter"),
     instagram_token: str = typer.Option(None, "--instagram-token", help="Instagram access token"),
     instagram_page_id: str = typer.Option(None, "--instagram-page-id", help="Instagram page ID"),
     pinterest_token: str = typer.Option(None, "--pinterest-token", help="Pinterest access token"),
     pinterest_board: str = typer.Option(None, "--pinterest-board", help="Pinterest board name"),
+    facebook_token: str = typer.Option(None, "--facebook-token", help="Facebook page access token"),
+    facebook_page_id: str = typer.Option(None, "--facebook-page-id", help="Facebook page ID"),
+    twitter_bearer: str = typer.Option(None, "--twitter-bearer", help="Twitter Bearer token"),
+    twitter_api_key: str = typer.Option(None, "--twitter-api-key", help="Twitter API key"),
+    twitter_api_secret: str = typer.Option(None, "--twitter-api-secret", help="Twitter API secret"),
+    twitter_access_token: str = typer.Option(None, "--twitter-access-token", help="Twitter access token"),
+    twitter_access_secret: str = typer.Option(None, "--twitter-access-secret", help="Twitter access token secret"),
     image_url: str = typer.Option(None, "--image-url", help="Default image URL")
 ):
     """Set API credentials for an account."""
@@ -151,6 +167,41 @@ def set_credentials(
         updated = True
         typer.echo(f"✅ Updated Pinterest board name to: {pinterest_board}")
     
+    if facebook_token:
+        account.api_credentials.facebook_access_token = facebook_token
+        updated = True
+        typer.echo("✅ Updated Facebook access token")
+    
+    if facebook_page_id:
+        account.api_credentials.facebook_page_id = facebook_page_id
+        updated = True
+        typer.echo("✅ Updated Facebook page ID")
+    
+    if twitter_bearer:
+        account.api_credentials.twitter_bearer_token = twitter_bearer
+        updated = True
+        typer.echo("✅ Updated Twitter Bearer token")
+    
+    if twitter_api_key:
+        account.api_credentials.twitter_api_key = twitter_api_key
+        updated = True
+        typer.echo("✅ Updated Twitter API key")
+    
+    if twitter_api_secret:
+        account.api_credentials.twitter_api_secret = twitter_api_secret
+        updated = True
+        typer.echo("✅ Updated Twitter API secret")
+    
+    if twitter_access_token:
+        account.api_credentials.twitter_access_token = twitter_access_token
+        updated = True
+        typer.echo("✅ Updated Twitter access token")
+    
+    if twitter_access_secret:
+        account.api_credentials.twitter_access_token_secret = twitter_access_secret
+        updated = True
+        typer.echo("✅ Updated Twitter access token secret")
+    
     if image_url:
         account.api_credentials.default_image_url = image_url
         updated = True
@@ -187,9 +238,12 @@ def list_accounts():
             typer.echo(f"   Status: {account.status.value}")
             
             # API status
-            ig_status = "✅" if account.has_instagram_credentials() else "❌"
-            pin_status = "✅" if account.has_pinterest_credentials() else "❌"
-            typer.echo(f"   APIs: Instagram {ig_status} | Pinterest {pin_status}")
+            status = account.get_platform_status()
+            ig_status = "✅" if status['instagram'] else "❌"
+            pin_status = "✅" if status['pinterest'] else "❌"
+            fb_status = "✅" if status['facebook'] else "❌"
+            tw_status = "✅" if status['twitter'] else "❌"
+            typer.echo(f"   APIs: Instagram {ig_status} | Pinterest {pin_status} | Facebook {fb_status} | Twitter {tw_status}")
             
             if account.api_credentials.default_image_url:
                 typer.echo(f"   Image: ✅ {account.api_credentials.default_image_url[:50]}...")
@@ -204,11 +258,11 @@ def list_accounts():
 @app.command()
 def test_api(
     account_name: str = typer.Option(None, help="Test specific account credentials"),
-    platform: str = typer.Option(None, help="Platform to test: instagram or pinterest")
+    platform: str = typer.Option(None, help="Platform to test: instagram, pinterest, facebook, or twitter")
 ):
     """Test API connectivity and authentication."""
     if not platform:
-        typer.echo("❌ Please specify --platform instagram or pinterest")
+        typer.echo("❌ Please specify --platform instagram, pinterest, facebook, or twitter")
         return
     
     # Load account if specified
@@ -267,8 +321,49 @@ def test_api(
                 typer.echo(f"   - {board.get('name', 'Unnamed')}")
         else:
             typer.echo("❌ Failed to get Pinterest user info")
+            
+    elif platform.lower() == "facebook":
+        if account:
+            api = FacebookAPIConfig.from_account(account)
+            if not api:
+                typer.echo("❌ No Facebook credentials configured for this account")
+                typer.echo("💡 Use 'set-credentials' command to add them")
+                return
+        else:
+            typer.echo("Testing Facebook API with environment variables...")
+            api = FacebookAPIConfig.from_env()
+            if not api:
+                return
+        
+        info = api.get_page_info()
+        if info:
+            typer.echo(f"✅ Facebook API working! Page: {info.get('name', 'Unknown')}")
+            typer.echo(f"   Followers: {info.get('fan_count', 'N/A')}")
+        else:
+            typer.echo("❌ Failed to get Facebook page info")
+            
+    elif platform.lower() == "twitter":
+        if account:
+            api = TwitterAPIConfig.from_account(account)
+            if not api:
+                typer.echo("❌ No Twitter credentials configured for this account")
+                typer.echo("💡 Use 'set-credentials' command to add them")
+                return
+        else:
+            typer.echo("Testing Twitter API with environment variables...")
+            api = TwitterAPIConfig.from_env()
+            if not api:
+                return
+        
+        info = api.get_user_info()
+        if info:
+            typer.echo(f"✅ Twitter API working! Account: @{info.get('username', 'Unknown')}")
+            metrics = info.get('public_metrics', {})
+            typer.echo(f"   Followers: {metrics.get('followers_count', 'N/A')}")
+        else:
+            typer.echo("❌ Failed to get Twitter user info")
     else:
-        typer.echo("❌ Invalid platform. Use 'instagram' or 'pinterest'")
+        typer.echo("❌ Invalid platform. Use 'instagram', 'pinterest', 'facebook', or 'twitter'")
 
 @app.command()
 def setup_env():
@@ -284,6 +379,19 @@ def setup_env():
     typer.echo("🔹 Pinterest (API v5):")
     typer.echo("   PINTEREST_ACCESS_TOKEN=your_pinterest_token")
     typer.echo("   PINTEREST_BOARD_NAME=Recipes")
+    typer.echo()
+    
+    typer.echo("🔹 Facebook (Pages API):")
+    typer.echo("   FACEBOOK_ACCESS_TOKEN=your_page_access_token")
+    typer.echo("   FACEBOOK_PAGE_ID=your_page_id")
+    typer.echo()
+    
+    typer.echo("🔹 Twitter/X (API v2):")
+    typer.echo("   TWITTER_BEARER_TOKEN=your_bearer_token")
+    typer.echo("   TWITTER_API_KEY=your_api_key (optional)")
+    typer.echo("   TWITTER_API_SECRET=your_api_secret (optional)")
+    typer.echo("   TWITTER_ACCESS_TOKEN=your_access_token (optional)")
+    typer.echo("   TWITTER_ACCESS_TOKEN_SECRET=your_access_secret (optional)")
     typer.echo()
     
     typer.echo("🔹 OpenAI:")

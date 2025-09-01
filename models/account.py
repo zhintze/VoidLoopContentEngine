@@ -14,10 +14,26 @@ class AccountStatus(str, Enum):
 
 class APICredentials(BaseModel):
     """API credentials for social media platforms"""
+    # Instagram
     instagram_access_token: Optional[str] = None
     instagram_page_id: Optional[str] = None
+    
+    # Pinterest  
     pinterest_access_token: Optional[str] = None
     pinterest_board_name: str = "Recipes"
+    
+    # Facebook
+    facebook_access_token: Optional[str] = None
+    facebook_page_id: Optional[str] = None
+    
+    # Twitter/X
+    twitter_bearer_token: Optional[str] = None
+    twitter_api_key: Optional[str] = None
+    twitter_api_secret: Optional[str] = None
+    twitter_access_token: Optional[str] = None
+    twitter_access_token_secret: Optional[str] = None
+    
+    # Shared
     default_image_url: Optional[str] = None
 
 
@@ -72,4 +88,22 @@ class Account(BaseModel):
     def has_pinterest_credentials(self) -> bool:
         """Check if Pinterest API credentials are configured"""
         return self.api_credentials.pinterest_access_token is not None
+    
+    def has_facebook_credentials(self) -> bool:
+        """Check if Facebook API credentials are configured"""
+        return (self.api_credentials.facebook_access_token is not None and 
+                self.api_credentials.facebook_page_id is not None)
+    
+    def has_twitter_credentials(self) -> bool:
+        """Check if Twitter API credentials are configured"""
+        return self.api_credentials.twitter_bearer_token is not None
+    
+    def get_platform_status(self) -> Dict[str, bool]:
+        """Get status of all platform credentials"""
+        return {
+            'instagram': self.has_instagram_credentials(),
+            'pinterest': self.has_pinterest_credentials(),
+            'facebook': self.has_facebook_credentials(),
+            'twitter': self.has_twitter_credentials()
+        }
 

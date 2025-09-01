@@ -13,6 +13,8 @@ from typing import Dict, Any
 from template_loader import load_template_config
 from services.instagram_api import InstagramAPIConfig
 from services.pinterest_api import PinterestAPIConfig
+from services.facebook_api import FacebookAPIConfig
+from services.twitter_api import TwitterAPIConfig
 
 
 class OutputFactory:
@@ -28,6 +30,10 @@ class OutputFactory:
             template_id = f"{account.template_id}_instagram"
         elif platform == "pinterest":
             template_id = f"{account.template_id}_pinterest"
+        elif platform == "facebook":
+            template_id = f"{account.template_id}_facebook"
+        elif platform == "twitter":
+            template_id = f"{account.template_id}_twitter"
         else:
             template_id = account.template_id
             
@@ -38,12 +44,18 @@ class OutputFactory:
         # Initialize API clients if auto_post is enabled
         self.instagram_api = None
         self.pinterest_api = None
+        self.facebook_api = None
+        self.twitter_api = None
         if auto_post and not offline:
             # Try account-specific credentials first, fallback to env
             self.instagram_api = (InstagramAPIConfig.from_account(account) or 
                                   InstagramAPIConfig.from_env())
             self.pinterest_api = (PinterestAPIConfig.from_account(account) or 
                                   PinterestAPIConfig.from_env())
+            self.facebook_api = (FacebookAPIConfig.from_account(account) or 
+                                FacebookAPIConfig.from_env())
+            self.twitter_api = (TwitterAPIConfig.from_account(account) or 
+                               TwitterAPIConfig.from_env())
 
     def load_template(self) -> Template:
         if not self.template_path.exists():
@@ -130,6 +142,28 @@ class OutputFactory:
                     "platform": "pinterest"
                 }
             }
+        elif self.platform == "facebook":
+            return {
+                "facebook_post": gpt_output,
+                "image_description": self.generate_image_description(gpt_output),
+                "debug": {
+                    "raw_output": gpt_output,
+                    "keywords": self.account.keywords,
+                    "tokens": usage,
+                    "platform": "facebook"
+                }
+            }
+        elif self.platform == "twitter":
+            return {
+                "twitter_post": gpt_output,
+                "image_description": self.generate_image_description(gpt_output),
+                "debug": {
+                    "raw_output": gpt_output,
+                    "keywords": self.account.keywords,
+                    "tokens": usage,
+                    "platform": "twitter"
+                }
+            }
         else:
             return {
                 "markdown": f"# Blog Post\n\n{gpt_output}",
@@ -184,6 +218,12 @@ class OutputFactory:
             (self.output_dir / "pinterest_description.txt").write_text(content["pinterest_description"])
             (self.output_dir / "pin_title.txt").write_text(content["pin_title"])
             (self.output_dir / "image_description.txt").write_text(content["image_description"])
+        elif self.platform == "facebook":
+            (self.output_dir / "facebook_post.txt").write_text(content["facebook_post"])
+            (self.output_dir / "image_description.txt").write_text(content["image_description"])
+        elif self.platform == "twitter":
+            (self.output_dir / "twitter_post.txt").write_text(content["twitter_post"])
+            (self.output_dir / "image_description.txt").write_text(content["image_description"])
         else:
             (self.output_dir / "blog.md").write_text(content["markdown"])
             (self.output_dir / "caption.txt").write_text(content["caption"])
@@ -214,6 +254,12 @@ class OutputFactory:
         elif self.platform == "pinterest":
             print("PINTEREST DESCRIPTION PREVIEW:")
             print(formatted["pinterest_description"][:200])
+        elif self.platform == "facebook":
+            print("FACEBOOK POST PREVIEW:")
+            print(formatted["facebook_post"][:200])
+        elif self.platform == "twitter":
+            print("TWITTER POST PREVIEW:")
+            print(formatted["twitter_post"][:200])
         else:
             print("MARKDOWN PREVIEW:")
             print(formatted["markdown"][:200])
@@ -235,6 +281,10 @@ class OutputFactory:
             self.post_to_instagram(content)
         elif self.platform == "pinterest":
             self.post_to_pinterest(content)
+        elif self.platform == "facebook":
+            self.post_to_facebook(content)
+        elif self.platform == "twitter":
+            self.post_to_twitter(content)
         else:
             print("Auto-posting not supported for blog platform")
 
@@ -306,3 +356,57 @@ class OutputFactory:
             print("✅ Successfully posted to Pinterest!")
         else:
             print("❌ Failed to post to Pinterest")
+    
+    def post_to_facebook(self, content: Dict[str, Any]):
+        """Post to Facebook using the Graph API"""
+        if not self.facebook_api:
+            print("❌ Facebook API not configured")
+            return
+            
+        # Get required data
+        message = content.get("facebook_post", "")
+        image_description = content.get("image_description", "")
+        
+        # Get image URL from account or environment
+        image_url = (self.account.api_credentials.default_image_url or 
+                     os.getenv('DEFAULT_RECIPE_IMAGE_URL'))
+        
+        # Optional: link back to blog
+        blog_link = self.account.site if hasattr(self.account, 'site') else None
+        
+        print(f"Message: {message[:100]}...")
+        if image_url:
+            print(f"Image: {image_url}")
+        if blog_link:
+            print(f"Link: {blog_link}")
+        
+        success = self.facebook_api.post_content(message, image_url, blog_link)
+        if success:
+            print("✅ Successfully posted to Facebook!")
+        else:
+            print("❌ Failed to post to Facebook")
+    
+    def post_to_twitter(self, content: Dict[str, Any]):
+        """Post to Twitter using the X API v2"""
+        if not self.twitter_api:
+            print("❌ Twitter API not configured")
+            return
+            
+        # Get required data
+        tweet_text = content.get("twitter_post", "")
+        image_description = content.get("image_description", "")
+        
+        # Get image URL from account or environment
+        image_url = (self.account.api_credentials.default_image_url or 
+                     os.getenv('DEFAULT_RECIPE_IMAGE_URL'))
+        
+        print(f"Tweet: {tweet_text}")
+        print(f"Length: {len(tweet_text)} characters")
+        if image_url:
+            print(f"Image: {image_url} (requires additional OAuth 1.0a setup)")
+        
+        success = self.twitter_api.post_tweet(tweet_text, image_url)
+        if success:
+            print("✅ Successfully posted to Twitter!")
+        else:
+            print("❌ Failed to post to Twitter")

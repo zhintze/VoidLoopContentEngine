@@ -1,0 +1,12 @@
+id = "recipe_facebook"
+name = "Facebook Recipe Post"
+description = "Generates Facebook-optimized posts for recipe content"
+temperature = 0.75
+model = "gpt-3.5-turbo"
+
+[schedule]
+frequency = "daily"
+time = "18:00"
+days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+timezone = "America/New_York"
+max_post_per_day = 1

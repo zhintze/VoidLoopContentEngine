@@ -1,16 +1,18 @@
 account_id = "quick_meals"
 name = "quick_meals"
-template_id = "recipe"
 site = "https://quickmeals.example.com"
+keywords = [ "fast", "easy", "weeknight",]
 tone = "friendly"
+hashtags = [ "#quickmeals", "#easyrecipes",]
+template_id = "recipe"
 status = "active"
-keywords = ["fast", "easy", "weeknight"]
-hashtags = ["#quickmeals", "#easyrecipes"]
-
-outputs = []
-post_queue = []
-log_entries = []
 
 [social_handles]
 instagram = "@quickmeals"
 pinterest = "quickmeals"
+
+[api_credentials]
+instagram_access_token = "fake_ig_token"
+instagram_page_id = "12345"
+pinterest_board_name = "Recipes"
+default_image_url = "https://example.com/quick-recipe.jpg"

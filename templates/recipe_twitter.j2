@@ -1,0 +1,32 @@
+Create a concise Twitter/X post for a recipe share.
+
+Style: {{ tone }}, punchy, engaging
+Target: Food lovers looking for {{ keywords | join(", ") }} recipe ideas  
+Format: Hook + recipe name + key benefit + hashtags
+Length: 240-260 characters (leaving room for engagement)
+Include: Recipe name, cooking time if under 30 minutes, key ingredient or technique
+
+Keywords to naturally include:
+{% for kw in keywords %}
+- {{ kw }}
+{% endfor %}
+
+Twitter Optimization Strategy:
+- Lead with an emoji or attention-grabbing phrase
+- Include recipe name and 1 compelling benefit
+- Mention cooking time if it's a quick recipe (under 30 min)
+- Use action words that create urgency or excitement
+- Add 1-2 key ingredients that sound appealing
+- Keep language concise and impactful
+
+Tweet Structure:
+1. Hook (emoji + question/statement) 
+2. Recipe name + benefit
+3. Time/ease factor if relevant
+4. Key ingredient tease
+5. Hashtags (3-4 max)
+
+Hashtags (limit to 3-4):
+{{ hashtags | join(" ") }} #RecipeOfTheDay #Cooking
+
+Focus on creating immediate appeal and encouraging retweets through concise, impactful language.

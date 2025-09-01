@@ -14,4 +14,5 @@ pinterest = ""
 [api_credentials]
 pinterest_access_token = "fake_token_123"
 pinterest_board_name = "Healthy Recipes"
+twitter_bearer_token = "fake_twitter_token_123"
 default_image_url = "https://example.com/organic-food.jpg"

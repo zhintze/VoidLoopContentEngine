@@ -1,0 +1,12 @@
+id = "recipe_twitter"
+name = "Twitter Recipe Post"
+description = "Generates Twitter/X-optimized posts for recipe content"
+temperature = 0.8
+model = "gpt-3.5-turbo"
+
+[schedule]
+frequency = "daily"
+time = "12:00"
+days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+timezone = "America/New_York"
+max_post_per_day = 3

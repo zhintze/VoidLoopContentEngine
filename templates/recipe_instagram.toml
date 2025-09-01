@@ -1,0 +1,12 @@
+id = "recipe_instagram"
+name = "Instagram Recipe Post"
+description = "Generates Instagram-optimized captions for recipe content"
+temperature = 0.8
+model = "gpt-3.5-turbo"
+
+[schedule]
+frequency = "daily"
+time = "17:00"
+days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+timezone = "America/New_York"
+max_post_per_day = 1

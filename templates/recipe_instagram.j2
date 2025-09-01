@@ -1,0 +1,17 @@
+Create an engaging Instagram caption for a quick recipe post.
+
+Style: {{ tone }}, conversational, food blogger voice
+Target: Busy home cooks looking for {{ keywords | join(", ") }} meal solutions
+Format: Hook + brief recipe overview + call to action
+Length: 150-200 characters max for primary text
+Include: Recipe name, 1-2 key benefits, cooking time if under 30 minutes
+
+Keywords to naturally include:
+{% for kw in keywords %}
+- {{ kw }}
+{% endfor %}
+
+End with hashtags (limit 10-15 relevant ones):
+{{ hashtags | join(" ") }} #homecooking #foodie #mealprep #dinnertime
+
+Focus on creating FOMO and making the recipe sound irresistible and doable.

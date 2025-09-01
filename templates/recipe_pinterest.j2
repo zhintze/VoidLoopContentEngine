@@ -1,0 +1,29 @@
+Create a Pinterest-optimized description for a recipe pin.
+
+Style: {{ tone }}, SEO-focused, keyword-rich
+Target: Home cooks searching for {{ keywords | join(", ") }} recipes
+Format: SEO title + detailed description + benefits + ingredients hint
+Length: 400-500 characters for optimal Pinterest performance
+
+SEO Strategy:
+- Start with keyword-rich title (include primary keyword: {{ keywords[0] if keywords else "recipe" }})
+- Include search-friendly phrases people actually type
+- Mention key ingredients, cooking method, and time
+- Add seasonal/occasion relevance when applicable
+
+Keywords to include naturally:
+{% for kw in keywords %}
+- {{ kw }}
+{% endfor %}
+
+Structure:
+1. Compelling title with main keyword
+2. Brief recipe description (what it is)
+3. Key benefits (why make it)
+4. Ingredients teaser or cooking method
+5. Perfect for [occasion/season]
+
+End with hashtags:
+{{ hashtags | join(" ") }} #recipe #cooking #homemade #delicious
+
+Focus on searchability and click-through appeal.

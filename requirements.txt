@@ -5,9 +5,11 @@ pydantic
 jinja2
 aiohttp
 apscheduler
+python-dotenv
 
-# Optional: trend scraping
-pytrends
+# Optional: trend scraping  
+requests  # For Reddit/TikTok APIs
+beautifulsoup4  # For web scraping if needed
 
 #Open AI
 tiktoken

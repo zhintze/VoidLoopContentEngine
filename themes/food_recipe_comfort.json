@@ -1,0 +1,248 @@
+{
+  "theme_id": "food_recipe_comfort",
+  "theme_type": "food_recipe",
+  "name": "Comfort Food & Cozy Recipe Theme",
+  "description": "Specialized theme for comfort food, cozy cooking, and nostalgic recipe content",
+  "version": "1.0",
+  
+  "categories": [
+    {
+      "category_name": "classic_comfort",
+      "primary_keywords": [
+        "comfort food", "soul food", "classic recipe", "traditional", "nostalgic",
+        "grandmother's recipe", "family recipe", "old-fashioned", "timeless"
+      ],
+      "secondary_keywords": [
+        "hearty", "satisfying", "warming", "filling", "rich", "indulgent",
+        "cozy", "homestyle", "down-home", "rustic"
+      ],
+      "related_terms": [
+        "mac and cheese", "fried chicken", "meatloaf", "pot roast", "chicken pot pie",
+        "mashed potatoes", "gravy", "biscuits", "cornbread", "casserole"
+      ]
+    },
+    {
+      "category_name": "cozy_baking",
+      "primary_keywords": [
+        "home baking", "fresh baked", "warm from the oven", "cozy kitchen",
+        "scratch-made", "homemade", "artisan", "rustic baking"
+      ],
+      "secondary_keywords": [
+        "buttery", "flaky", "tender", "golden brown", "aromatic", "fragrant",
+        "perfectly risen", "crispy crust", "soft interior"
+      ],
+      "related_terms": [
+        "bread", "rolls", "pie", "cobbler", "muffins", "scones", "cookies",
+        "coffee cake", "cinnamon rolls", "banana bread"
+      ]
+    },
+    {
+      "category_name": "slow_cooked",
+      "primary_keywords": [
+        "slow cooked", "braised", "simmered", "low and slow", "all-day cooking",
+        "crockpot", "slow cooker", "dutch oven", "one-pot"
+      ],
+      "secondary_keywords": [
+        "tender", "fall-off-the-bone", "melt-in-your-mouth", "deeply flavored",
+        "rich and savory", "perfectly seasoned", "comforting"
+      ],
+      "related_terms": [
+        "stew", "chili", "roast", "pulled pork", "beef bourguignon",
+        "chicken and dumplings", "soup", "broth", "stock"
+      ]
+    },
+    {
+      "category_name": "childhood_favorites",
+      "primary_keywords": [
+        "childhood favorite", "kid-friendly", "nostalgic", "school lunch",
+        "after-school snack", "lunchbox", "family dinner", "Sunday dinner"
+      ],
+      "secondary_keywords": [
+        "familiar flavors", "crowd-pleaser", "everyone loves", "picky-eater approved",
+        "brings back memories", "comfort zone", "reliable"
+      ],
+      "related_terms": [
+        "grilled cheese", "tomato soup", "peanut butter cookies", "chocolate chip",
+        "spaghetti and meatballs", "tuna noodle casserole", "chicken nuggets"
+      ]
+    }
+  ],
+
+  "seasonal_keywords": [
+    {
+      "season": "spring",
+      "months": [3, 4, 5],
+      "keywords": [
+        "easter dinner", "spring comfort", "lighter comfort", "fresh herbs",
+        "spring vegetables", "lamb", "ham", "deviled eggs", "potato salad"
+      ],
+      "hashtags": ["#springcomfort", "#easterdinner", "#springbaking"]
+    },
+    {
+      "season": "summer",
+      "months": [6, 7, 8],
+      "keywords": [
+        "backyard bbq", "picnic food", "grilling", "outdoor cooking",
+        "summer comfort", "corn on the cob", "burgers", "hot dogs", "coleslaw"
+      ],
+      "hashtags": ["#summerbbq", "#picnicfood", "#grilling", "#outdoorcooking"]
+    },
+    {
+      "season": "fall",
+      "months": [9, 10, 11],
+      "keywords": [
+        "autumn comfort", "harvest flavors", "thanksgiving", "pumpkin spice",
+        "apple pie", "soup season", "cozy cooking", "warm spices"
+      ],
+      "hashtags": ["#fallcomfort", "#thanksgiving", "#soupseason", "#cozy"]
+    },
+    {
+      "season": "winter",
+      "months": [12, 1, 2],
+      "keywords": [
+        "holiday comfort", "christmas cookies", "warm drinks", "hot cocoa",
+        "holiday baking", "winter stews", "fireplace cooking", "snow day food"
+      ],
+      "hashtags": ["#holidaycomfort", "#winterbaking", "#snowdayfood", "#cozy"]
+    }
+  ],
+
+  "content_tones": [
+    {
+      "name": "nostalgic",
+      "description": "Warm, sentimental, and memory-focused",
+      "keywords": ["reminds me of", "takes me back", "childhood memories", "traditional"],
+      "avoid_terms": ["trendy", "modern", "innovative", "cutting-edge"],
+      "example_phrases": [
+        "Just like grandma used to make",
+        "This takes me back to childhood",
+        "A recipe passed down through generations"
+      ]
+    },
+    {
+      "name": "cozy",
+      "description": "Warm, inviting, and homey",
+      "keywords": ["cozy", "warm", "inviting", "comforting", "snuggled up"],
+      "avoid_terms": ["formal", "fancy", "sophisticated", "elegant"],
+      "example_phrases": [
+        "Perfect for a cozy night in",
+        "Warm your heart and home",
+        "Snuggle up with this comfort"
+      ]
+    }
+  ],
+
+  "ingredients": [
+    {
+      "ingredient": "butter",
+      "synonyms": ["real butter", "creamy butter"],
+      "related_ingredients": ["cream", "milk", "eggs", "flour"],
+      "cooking_methods": ["browning", "creaming", "melting", "spreading"],
+      "cuisine_types": ["american", "french", "european"],
+      "dietary_tags": ["rich", "indulgent", "traditional"]
+    },
+    {
+      "ingredient": "ground beef",
+      "synonyms": ["hamburger", "minced beef"],
+      "related_ingredients": ["onions", "garlic", "tomatoes", "cheese"],
+      "cooking_methods": ["browning", "simmering", "grilling", "baking"],
+      "cuisine_types": ["american", "comfort food"],
+      "dietary_tags": ["protein-rich", "hearty", "filling"]
+    },
+    {
+      "ingredient": "cheese",
+      "synonyms": ["melted cheese", "gooey cheese"],
+      "related_ingredients": ["butter", "cream", "milk", "pasta"],
+      "cooking_methods": ["melting", "grating", "layering", "stuffing"],
+      "cuisine_types": ["american", "italian", "comfort"],
+      "dietary_tags": ["indulgent", "rich", "satisfying"]
+    }
+  ],
+
+  "cooking_techniques": [
+    {
+      "technique": "braising",
+      "related_terms": ["slow cooking", "tender", "fall-apart", "low and slow"],
+      "equipment_needed": ["dutch oven", "heavy pot", "lid"],
+      "suitable_ingredients": ["tough cuts of meat", "root vegetables"],
+      "difficulty_level": "medium",
+      "time_indicators": ["long cooking", "patient cooking", "all-day"]
+    },
+    {
+      "technique": "casserole making",
+      "related_terms": ["one-dish", "baked", "layered", "make-ahead"],
+      "equipment_needed": ["baking dish", "oven", "foil"],
+      "suitable_ingredients": ["pasta", "rice", "vegetables", "cheese", "meat"],
+      "difficulty_level": "easy",
+      "time_indicators": ["family-sized", "crowd-pleaser", "leftovers"]
+    }
+  ],
+
+  "dietary_restrictions": [
+    {
+      "restriction_type": "kid_friendly",
+      "primary_keywords": ["kid-friendly", "picky eater", "family-approved", "simple flavors"],
+      "substitute_terms": ["mild seasoning", "familiar ingredients", "hidden veggies"],
+      "forbidden_terms": ["spicy", "exotic", "unfamiliar", "strong flavors"],
+      "alternative_ingredients": ["mild cheese", "ground turkey", "sweet vegetables"]
+    },
+    {
+      "restriction_type": "crowd_pleasing",
+      "primary_keywords": ["crowd-pleaser", "feeds a crowd", "potluck perfect", "everyone loves"],
+      "substitute_terms": ["large batch", "shareable", "universally loved"],
+      "forbidden_terms": ["acquired taste", "unusual", "polarizing", "niche"],
+      "alternative_ingredients": ["familiar flavors", "classic combinations", "safe choices"]
+    }
+  ],
+
+  "platform_optimization": {
+    "instagram": {
+      "visual_keywords": ["golden brown", "melted cheese", "steam rising", "rustic presentation"],
+      "comfort_hashtags": ["#comfortfood", "#homemade", "#cozy", "#hearty", "#satisfying"],
+      "story_content": ["cooking process", "family reactions", "cozy kitchen vibes"]
+    },
+    "tiktok": {
+      "comfort_trends": ["comfort food review", "cooking like grandma", "ultimate comfort", "cozy vibes"],
+      "nostalgic_content": ["childhood favorites", "family recipes", "old-school cooking"],
+      "reaction_content": ["first bite reactions", "comfort food rankings", "taste test"]
+    },
+    "pinterest": {
+      "recipe_formats": ["classic comfort food", "family dinner ideas", "cozy recipe collection"],
+      "occasion_focused": ["family dinner", "sunday meal", "comfort classics", "nostalgic recipes"]
+    }
+  },
+
+  "trend_keywords": [
+    "comfort food comeback", "nostalgic recipe", "grandma's secret", "ultimate comfort",
+    "cozy cooking", "comfort classic", "family favorite", "timeless recipe"
+  ],
+
+  "viral_indicators": [
+    "everyone's making grandma's", "comfort food obsession", "ultimate comfort",
+    "brings back memories", "family recipe gold", "cozy kitchen vibes"
+  ],
+
+  "content_templates": {
+    "nostalgic": "This {dish} reminds me of {memory/person} and always brings comfort",
+    "family_focused": "Perfect {dish} for bringing the whole family together",
+    "comfort_emphasis": "When you need pure comfort, this {dish} delivers every time",
+    "seasonal_comfort": "Nothing says {season} comfort like this classic {dish}"
+  },
+
+  "call_to_actions": [
+    "Share your comfort food memories",
+    "Tag someone who needs this comfort",
+    "Save for your next cozy night in",
+    "What's your ultimate comfort food?",
+    "Drop a ❤️ if this brings back memories",
+    "Follow for more comfort classics"
+  ],
+
+  "engagement_phrases": [
+    "Pure comfort in every bite",
+    "Like a warm hug on a plate",
+    "Comfort food at its finest",
+    "This hits different on a cold day",
+    "Grandma would be proud"
+  ]
+}

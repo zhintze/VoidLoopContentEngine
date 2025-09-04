@@ -1,0 +1,248 @@
+{
+  "theme_id": "food_recipe_healthy",
+  "theme_type": "food_recipe",
+  "name": "Healthy Food & Recipe Theme",
+  "description": "Specialized theme focused on healthy eating, nutrition, and wellness-oriented recipe content",
+  "version": "1.0",
+  
+  "categories": [
+    {
+      "category_name": "clean_eating",
+      "primary_keywords": [
+        "clean eating", "whole foods", "unprocessed", "natural", "organic",
+        "farm-to-table", "real food", "pure ingredients"
+      ],
+      "secondary_keywords": [
+        "chemical-free", "additive-free", "preservative-free", "non-GMO",
+        "sustainable", "ethical", "local", "seasonal"
+      ],
+      "related_terms": [
+        "farmers market", "organic produce", "grass-fed", "pasture-raised",
+        "wild-caught", "heirloom varieties", "sprouted", "fermented"
+      ]
+    },
+    {
+      "category_name": "superfoods",
+      "primary_keywords": [
+        "superfood", "antioxidant-rich", "nutrient-dense", "powerhouse",
+        "functional food", "immunity-boosting", "anti-inflammatory"
+      ],
+      "secondary_keywords": [
+        "vitamin-packed", "mineral-rich", "phytonutrient", "polyphenol",
+        "omega-3", "fiber-rich", "probiotic", "prebiotic"
+      ],
+      "related_terms": [
+        "blueberries", "kale", "quinoa", "chia seeds", "goji berries",
+        "turmeric", "ginger", "green tea", "dark chocolate", "avocado"
+      ]
+    },
+    {
+      "category_name": "meal_prep",
+      "primary_keywords": [
+        "meal prep", "batch cooking", "make-ahead", "weekly prep",
+        "healthy meal prep", "prep containers", "portion control"
+      ],
+      "secondary_keywords": [
+        "time-saving", "organized eating", "planned nutrition",
+        "healthy convenience", "grab-and-go", "balanced portions"
+      ],
+      "related_terms": [
+        "glass containers", "portioned meals", "freezer-friendly",
+        "reheat instructions", "prep day", "weekly planning"
+      ]
+    },
+    {
+      "category_name": "plant_based",
+      "primary_keywords": [
+        "plant-based", "plant-forward", "vegetable-focused", "meat-free",
+        "veggie-packed", "plant protein", "green eating"
+      ],
+      "secondary_keywords": [
+        "colorful vegetables", "leafy greens", "root vegetables",
+        "cruciferous", "rainbow eating", "vegetable variety"
+      ],
+      "related_terms": [
+        "buddha bowl", "veggie burger", "cauliflower rice", "zucchini noodles",
+        "jackfruit", "mushroom", "lentils", "chickpeas"
+      ]
+    }
+  ],
+
+  "seasonal_keywords": [
+    {
+      "season": "spring",
+      "months": [3, 4, 5],
+      "keywords": [
+        "detox", "cleanse", "renewal", "fresh start", "spring vegetables",
+        "asparagus", "artichokes", "spring onions", "peas", "radishes"
+      ],
+      "hashtags": ["#springdetox", "#cleanse", "#freshstart", "#springveggies"]
+    },
+    {
+      "season": "summer",
+      "months": [6, 7, 8],
+      "keywords": [
+        "hydrating", "cooling", "fresh fruit", "raw foods", "cold soups",
+        "gazpacho", "smoothie bowls", "fresh herbs", "cucumber", "watermelon"
+      ],
+      "hashtags": ["#hydrating", "#summerfresh", "#rawfood", "#smoothiebowl"]
+    },
+    {
+      "season": "fall",
+      "months": [9, 10, 11],
+      "keywords": [
+        "immune support", "warming spices", "roasted vegetables", "squash",
+        "pumpkin", "sweet potato", "apple", "cinnamon", "ginger"
+      ],
+      "hashtags": ["#immunesupport", "#fallharvest", "#roastedveggies", "#warming"]
+    },
+    {
+      "season": "winter",
+      "months": [12, 1, 2],
+      "keywords": [
+        "warming foods", "comfort nutrition", "hearty soups", "stews",
+        "citrus", "vitamin C", "warming teas", "root vegetables"
+      ],
+      "hashtags": ["#warmingfoods", "#comfortnutrition", "#immuneboost", "#hearty"]
+    }
+  ],
+
+  "content_tones": [
+    {
+      "name": "wellness_focused",
+      "description": "Health-conscious, informative, and empowering",
+      "keywords": ["nourishing", "energizing", "revitalizing", "healing", "wholesome"],
+      "avoid_terms": ["diet", "restriction", "guilty pleasure", "cheat meal"],
+      "example_phrases": [
+        "Nourish your body with this",
+        "Feel energized and satisfied",
+        "Support your wellness journey"
+      ]
+    },
+    {
+      "name": "science_backed",
+      "description": "Evidence-based, educational, and credible",
+      "keywords": ["research shows", "studies indicate", "proven benefits", "scientific"],
+      "avoid_terms": ["magic", "miracle", "instant", "guaranteed"],
+      "example_phrases": [
+        "Research shows that...",
+        "Packed with antioxidants that...",
+        "Studies indicate this ingredient..."
+      ]
+    }
+  ],
+
+  "ingredients": [
+    {
+      "ingredient": "quinoa",
+      "synonyms": ["keen-wah", "super grain"],
+      "related_ingredients": ["brown rice", "farro", "bulgur", "barley"],
+      "cooking_methods": ["boiling", "toasting", "pilaf", "salad"],
+      "cuisine_types": ["south american", "mediterranean", "modern"],
+      "dietary_tags": ["gluten-free", "complete-protein", "high-fiber", "ancient-grain"]
+    },
+    {
+      "ingredient": "kale",
+      "synonyms": ["leafy greens", "dark greens"],
+      "related_ingredients": ["spinach", "arugula", "collard greens", "swiss chard"],
+      "cooking_methods": ["raw", "massaged", "sautéed", "baked", "steamed"],
+      "cuisine_types": ["mediterranean", "modern american"],
+      "dietary_tags": ["superfood", "high-vitamin-k", "antioxidant-rich", "low-calorie"]
+    },
+    {
+      "ingredient": "chia seeds",
+      "synonyms": ["chia", "super seeds"],
+      "related_ingredients": ["flax seeds", "hemp seeds", "pumpkin seeds"],
+      "cooking_methods": ["soaked", "ground", "pudding", "topping"],
+      "cuisine_types": ["modern", "raw food", "smoothie bowls"],
+      "dietary_tags": ["omega-3", "high-fiber", "complete-protein", "gluten-free"]
+    }
+  ],
+
+  "cooking_techniques": [
+    {
+      "technique": "steaming",
+      "related_terms": ["gentle cooking", "nutrient preservation", "light preparation"],
+      "equipment_needed": ["steamer basket", "bamboo steamer", "steam insert"],
+      "suitable_ingredients": ["vegetables", "fish", "dumplings"],
+      "difficulty_level": "easy",
+      "time_indicators": ["quick", "gentle", "preserving nutrients"]
+    },
+    {
+      "technique": "raw preparation",
+      "related_terms": ["no-cook", "enzyme-rich", "living foods", "raw food"],
+      "equipment_needed": ["food processor", "high-speed blender", "dehydrator"],
+      "suitable_ingredients": ["vegetables", "fruits", "nuts", "seeds"],
+      "difficulty_level": "easy",
+      "time_indicators": ["instant", "no cooking required", "fresh"]
+    }
+  ],
+
+  "dietary_restrictions": [
+    {
+      "restriction_type": "anti_inflammatory",
+      "primary_keywords": ["anti-inflammatory", "inflammation-fighting", "healing foods"],
+      "substitute_terms": ["turmeric", "ginger", "omega-3 rich", "colorful produce"],
+      "forbidden_terms": ["processed", "fried", "refined sugar", "trans fats"],
+      "alternative_ingredients": ["olive oil", "fatty fish", "berries", "leafy greens"]
+    },
+    {
+      "restriction_type": "gut_health",
+      "primary_keywords": ["gut health", "digestive wellness", "microbiome support"],
+      "substitute_terms": ["fermented foods", "prebiotic fiber", "probiotic"],
+      "forbidden_terms": ["artificial sweeteners", "processed foods", "excess sugar"],
+      "alternative_ingredients": ["kimchi", "sauerkraut", "kefir", "fiber-rich vegetables"]
+    }
+  ],
+
+  "platform_optimization": {
+    "instagram": {
+      "visual_keywords": ["colorful", "vibrant", "fresh", "green", "rainbow"],
+      "health_hashtags": ["#healthyeating", "#wellness", "#nutrition", "#cleaneating", "#superfood"],
+      "transformation_content": ["before and after", "progress", "journey", "transformation"]
+    },
+    "tiktok": {
+      "health_trends": ["what I eat in a day", "healthy swaps", "nutrition tips", "wellness routine"],
+      "educational_content": ["nutrition facts", "health benefits", "ingredient spotlight"],
+      "challenge_ideas": ["7-day challenge", "healthy habits", "nutrition challenge"]
+    },
+    "pinterest": {
+      "recipe_formats": ["healthy meal prep", "nutritious recipes", "clean eating meals"],
+      "benefit_focused": ["weight loss", "energy boosting", "immune supporting", "anti-aging"]
+    }
+  },
+
+  "trend_keywords": [
+    "wellness trend", "health hack", "nutrition tip", "superfood spotlight",
+    "healthy swap", "clean ingredient", "functional food", "wellness Wednesday"
+  ],
+
+  "viral_indicators": [
+    "everyone's talking about", "health game changer", "wellness obsession",
+    "nutritionist approved", "science-backed", "feel-good food"
+  ],
+
+  "content_templates": {
+    "benefit_focused": "This {ingredient} is packed with {nutrients} to help {benefit}",
+    "educational": "Did you know {ingredient} contains {nutrient} which {function}?",
+    "transformation": "Swap {unhealthy_item} for {healthy_alternative} to {benefit}",
+    "meal_prep": "Prep this {dish} on Sunday for healthy {meal_type} all week"
+  },
+
+  "call_to_actions": [
+    "Save this for your next grocery trip",
+    "Share with someone on their wellness journey",
+    "What's your favorite superfood?",
+    "Tag a friend who needs more veggies",
+    "Drop a 🥬 if you're trying this",
+    "Follow for daily nutrition tips"
+  ],
+
+  "engagement_phrases": [
+    "Recipe for glowing skin",
+    "Fuel your body right",
+    "Nutrition facts in comments",
+    "Health benefits explained",
+    "Your body will thank you"
+  ]
+}

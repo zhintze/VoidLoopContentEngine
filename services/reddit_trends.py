@@ -8,17 +8,19 @@ from models.trend import (
     TrendKeyword, TrendCategory, TrendSource, TrendScore, 
     PlatformMetrics, RegionalData
 )
+from services.theme_trend_integration import theme_trend_integrator
 
 
 class RedditTrendsService:
     """Service for fetching food/recipe trends from Reddit"""
     
-    def __init__(self):
+    def __init__(self, theme_id: str = "food_recipe_general"):
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': 'VoidLoopContentEngine/1.0 (Food trend analysis)'
         })
         self.request_delay = 1.0
+        self.theme_id = theme_id
         
         # Food-related subreddits to monitor
         self.food_subreddits = [
@@ -41,7 +43,7 @@ class RedditTrendsService:
                     title = post.get('title', '')
                     score = post.get('score', 0)
                     
-                    if self._is_food_related(title) and score > 50:
+                    if theme_trend_integrator.is_food_related_by_theme(title, self.theme_id) and score > 50:
                         # Extract keywords from title
                         keywords = self._extract_keywords_from_title(title)
                         for keyword in keywords:
@@ -317,20 +319,8 @@ class RedditTrendsService:
         return word in basic_ingredients
     
     def _is_food_related(self, text: str) -> bool:
-        """Check if text contains food/recipe content (for post filtering)"""
-        text_lower = text.lower()
-        
-        # More specific food-related terms for post content filtering
-        food_context_terms = [
-            'recipe', 'cooking', 'baking', 'food', 'meal', 'dish', 'cuisine',
-            'restaurant', 'chef', 'kitchen', 'ingredient', 'flavor', 'taste',
-            'breakfast', 'lunch', 'dinner', 'dessert', 'snack', 'appetizer', 
-            'soup', 'salad', 'pasta', 'pizza', 'bread', 'cake', 'cookie', 'pie',
-            'chicken', 'beef', 'pork', 'fish', 'vegetarian', 'vegan',
-            'grilled', 'fried', 'roasted', 'baked', 'nutrition', 'diet'
-        ]
-        
-        return any(term in text_lower for term in food_context_terms)
+        """Check if text contains food/recipe content using theme system"""
+        return theme_trend_integrator.is_food_related_by_theme(text, self.theme_id)
     
     def _create_trend_keyword(self, keyword: str, score: float, 
                             geo: str, source_url: str = '') -> TrendKeyword:
@@ -359,25 +349,5 @@ class RedditTrendsService:
         )
     
     def _categorize_keyword(self, keyword: str) -> TrendCategory:
-        """Categorize a keyword into appropriate TrendCategory"""
-        keyword_lower = keyword.lower()
-        
-        category_mapping = {
-            TrendCategory.COMFORT_FOOD: ['comfort', 'mac', 'cheese', 'pizza', 'burger', 'fried'],
-            TrendCategory.HEALTHY_EATING: ['healthy', 'diet', 'keto', 'vegan', 'vegetarian', 'low', 'organic'],
-            TrendCategory.INTERNATIONAL: ['chinese', 'italian', 'mexican', 'indian', 'thai', 'japanese', 'french'],
-            TrendCategory.DESSERTS: ['cake', 'cookie', 'pie', 'dessert', 'sweet', 'chocolate', 'cream'],
-            TrendCategory.QUICK_MEALS: ['quick', 'easy', 'minute', 'instant', 'microwave'],
-            TrendCategory.DIETARY_RESTRICTIONS: ['gluten', 'dairy', 'sugar', 'free', 'paleo', 'keto'],
-            TrendCategory.SEASONAL: ['christmas', 'thanksgiving', 'halloween', 'easter', 'summer', 'winter'],
-            TrendCategory.VIRAL_RECIPES: ['viral', 'trending', 'famous', 'popular'],
-            TrendCategory.COOKING_TECHNIQUES: ['grilling', 'roasting', 'frying', 'baking', 'slow', 'instant'],
-            TrendCategory.INGREDIENTS: ['chicken', 'beef', 'pasta', 'rice', 'vegetables', 'fruit'],
-            TrendCategory.BEVERAGES: ['smoothie', 'juice', 'coffee', 'tea', 'cocktail', 'drink']
-        }
-        
-        for category, terms in category_mapping.items():
-            if any(term in keyword_lower for term in terms):
-                return category
-        
-        return TrendCategory.VIRAL_RECIPES
+        """Categorize a keyword using theme system"""
+        return theme_trend_integrator.categorize_keyword_from_theme(keyword, self.theme_id)

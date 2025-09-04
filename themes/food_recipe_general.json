@@ -1,0 +1,312 @@
+{
+  "theme_id": "food_recipe_general",
+  "theme_type": "food_recipe",
+  "name": "General Food & Recipe Theme",
+  "description": "Comprehensive theme for general food and recipe content across all platforms",
+  "version": "1.0",
+  
+  "categories": [
+    {
+      "category_name": "comfort_food",
+      "primary_keywords": [
+        "comfort food", "cozy meals", "hearty dishes", "soul food", 
+        "nostalgic recipes", "family recipes", "home cooking"
+      ],
+      "secondary_keywords": [
+        "warm", "satisfying", "indulgent", "classic", "traditional",
+        "homestyle", "grandmother's recipe", "childhood favorite"
+      ],
+      "related_terms": [
+        "mac and cheese", "chicken pot pie", "meatloaf", "casserole",
+        "stew", "soup", "roast", "mashed potatoes"
+      ],
+      "platform_specific": {
+        "instagram": {
+          "hashtags": ["#comfortfood", "#cozy", "#homecooking", "#soulFood", "#hearty"]
+        },
+        "tiktok": {
+          "hashtags": ["comfortfood", "cozyvibes", "homecooking", "foodtok"]
+        },
+        "pinterest": {
+          "keywords": ["comfort food recipes", "cozy dinner ideas", "hearty meal recipes"]
+        }
+      }
+    },
+    {
+      "category_name": "healthy_eating",
+      "primary_keywords": [
+        "healthy", "nutritious", "wholesome", "clean eating", "wellness",
+        "balanced diet", "superfood", "organic"
+      ],
+      "secondary_keywords": [
+        "fresh", "natural", "nutrient-dense", "antioxidant-rich", "low-calorie",
+        "high-protein", "fiber-rich", "vitamin-packed"
+      ],
+      "related_terms": [
+        "quinoa", "kale", "avocado", "salmon", "berries", "nuts",
+        "greek yogurt", "sweet potato", "spinach", "chia seeds"
+      ],
+      "platform_specific": {
+        "instagram": {
+          "hashtags": ["#healthyfood", "#wellness", "#cleaneating", "#nutrition", "#superfood"]
+        },
+        "tiktok": {
+          "hashtags": ["healthyfood", "wellness", "nutrition", "healthyrecipes"]
+        },
+        "pinterest": {
+          "keywords": ["healthy recipes", "clean eating meals", "nutritious dinner ideas"]
+        }
+      }
+    },
+    {
+      "category_name": "quick_meals",
+      "primary_keywords": [
+        "quick", "easy", "fast", "simple", "30-minute meals", 
+        "weeknight dinner", "one-pot", "sheet pan"
+      ],
+      "secondary_keywords": [
+        "minimal prep", "few ingredients", "busy weeknight", "time-saving",
+        "effortless", "no-fuss", "straightforward"
+      ],
+      "related_terms": [
+        "stir-fry", "pasta", "salad", "sandwich", "wrap", "smoothie",
+        "instant pot", "air fryer", "microwave"
+      ],
+      "platform_specific": {
+        "instagram": {
+          "hashtags": ["#quickmeals", "#easyrecipes", "#weeknightdinner", "#onepot"]
+        },
+        "tiktok": {
+          "hashtags": ["quickrecipes", "easymeals", "lazycooking", "mealprep"]
+        },
+        "pinterest": {
+          "keywords": ["quick dinner recipes", "easy weeknight meals", "30 minute recipes"]
+        }
+      }
+    },
+    {
+      "category_name": "desserts",
+      "primary_keywords": [
+        "dessert", "sweet", "treat", "indulgent", "decadent", 
+        "baking", "pastry", "confection"
+      ],
+      "secondary_keywords": [
+        "rich", "creamy", "fluffy", "moist", "crispy", "gooey",
+        "glazed", "frosted", "layered"
+      ],
+      "related_terms": [
+        "chocolate", "vanilla", "caramel", "berry", "lemon", "coconut",
+        "cake", "cookie", "pie", "tart", "brownie", "ice cream"
+      ],
+      "platform_specific": {
+        "instagram": {
+          "hashtags": ["#dessert", "#sweet", "#baking", "#treat", "#indulgent"]
+        },
+        "tiktok": {
+          "hashtags": ["dessert", "baking", "sweettooth", "bakingtok"]
+        },
+        "pinterest": {
+          "keywords": ["dessert recipes", "easy baking", "sweet treats", "cake recipes"]
+        }
+      }
+    }
+  ],
+
+  "seasonal_keywords": [
+    {
+      "season": "spring",
+      "months": [3, 4, 5],
+      "keywords": [
+        "fresh", "light", "seasonal vegetables", "asparagus", "peas",
+        "spring onions", "fresh herbs", "easter", "brunch"
+      ],
+      "hashtags": ["#springfood", "#seasonal", "#fresh", "#easter", "#brunch"]
+    },
+    {
+      "season": "summer",
+      "months": [6, 7, 8],
+      "keywords": [
+        "grilling", "barbecue", "fresh fruit", "cold drinks", "salads",
+        "no-cook", "refreshing", "outdoor cooking", "picnic"
+      ],
+      "hashtags": ["#summer", "#grilling", "#bbq", "#freshfruit", "#coldsalads"]
+    },
+    {
+      "season": "fall",
+      "months": [9, 10, 11],
+      "keywords": [
+        "pumpkin", "apple", "cinnamon", "warm spices", "comfort food",
+        "thanksgiving", "harvest", "cozy", "soup season"
+      ],
+      "hashtags": ["#fall", "#pumpkin", "#apple", "#thanksgiving", "#cozy"]
+    },
+    {
+      "season": "winter",
+      "months": [12, 1, 2],
+      "keywords": [
+        "holiday", "christmas", "warm drinks", "baking", "cookies",
+        "hot chocolate", "stews", "roasts", "citrus"
+      ],
+      "hashtags": ["#holiday", "#christmas", "#winterfood", "#holidaybaking"]
+    }
+  ],
+
+  "content_tones": [
+    {
+      "name": "friendly",
+      "description": "Warm, approachable, and conversational",
+      "keywords": ["delicious", "amazing", "perfect", "love", "favorite", "wonderful"],
+      "avoid_terms": ["complicated", "difficult", "expert-only", "professional"],
+      "example_phrases": [
+        "This recipe is a game-changer!",
+        "Perfect for busy weeknights",
+        "Your family will love this"
+      ]
+    },
+    {
+      "name": "expert",
+      "description": "Knowledgeable, detailed, and technique-focused",
+      "keywords": ["technique", "method", "proper", "essential", "master", "fundamental"],
+      "avoid_terms": ["simple", "easy", "basic", "beginner"],
+      "example_phrases": [
+        "The key technique here is...",
+        "Professional chefs use this method",
+        "Master this fundamental skill"
+      ]
+    },
+    {
+      "name": "enthusiastic",
+      "description": "Energetic, exciting, and passionate",
+      "keywords": ["incredible", "amazing", "fantastic", "mind-blowing", "obsessed"],
+      "avoid_terms": ["okay", "fine", "decent", "alright"],
+      "example_phrases": [
+        "This will blow your mind!",
+        "I'm absolutely obsessed with this recipe",
+        "Get ready for flavor explosion!"
+      ]
+    }
+  ],
+
+  "ingredients": [
+    {
+      "ingredient": "chicken",
+      "synonyms": ["poultry", "fowl"],
+      "related_ingredients": ["turkey", "duck", "eggs"],
+      "cooking_methods": ["grilling", "roasting", "frying", "braising", "poaching"],
+      "cuisine_types": ["american", "mediterranean", "asian", "mexican"],
+      "dietary_tags": ["high-protein", "keto-friendly"]
+    },
+    {
+      "ingredient": "avocado",
+      "synonyms": ["avos"],
+      "related_ingredients": ["lime", "cilantro", "tomato", "onion"],
+      "cooking_methods": ["raw", "mashed", "grilled", "stuffed"],
+      "cuisine_types": ["mexican", "california", "mediterranean"],
+      "dietary_tags": ["vegan", "keto", "healthy-fats", "paleo"]
+    },
+    {
+      "ingredient": "pasta",
+      "synonyms": ["noodles"],
+      "related_ingredients": ["tomatoes", "cheese", "garlic", "basil", "olive oil"],
+      "cooking_methods": ["boiling", "baking", "sautéing"],
+      "cuisine_types": ["italian", "mediterranean"],
+      "dietary_tags": ["vegetarian", "comfort-food"]
+    }
+  ],
+
+  "cooking_techniques": [
+    {
+      "technique": "grilling",
+      "related_terms": ["barbecue", "char", "smoky", "outdoor cooking"],
+      "equipment_needed": ["grill", "tongs", "grill brush"],
+      "suitable_ingredients": ["meat", "vegetables", "fish", "fruit"],
+      "difficulty_level": "medium",
+      "time_indicators": ["quick", "fast", "summer cooking"]
+    },
+    {
+      "technique": "meal prep",
+      "related_terms": ["batch cooking", "make-ahead", "weekly prep", "containers"],
+      "equipment_needed": ["containers", "labels", "refrigerator space"],
+      "suitable_ingredients": ["grains", "proteins", "roasted vegetables"],
+      "difficulty_level": "easy",
+      "time_indicators": ["weekend prep", "weekly", "advance preparation"]
+    }
+  ],
+
+  "dietary_restrictions": [
+    {
+      "restriction_type": "vegan",
+      "primary_keywords": ["vegan", "plant-based", "dairy-free", "egg-free"],
+      "substitute_terms": ["plant milk", "cashew cream", "nutritional yeast", "flax eggs"],
+      "forbidden_terms": ["meat", "dairy", "eggs", "honey", "gelatin"],
+      "alternative_ingredients": ["tofu", "tempeh", "jackfruit", "mushrooms"]
+    },
+    {
+      "restriction_type": "keto",
+      "primary_keywords": ["keto", "ketogenic", "low-carb", "high-fat"],
+      "substitute_terms": ["cauliflower rice", "zucchini noodles", "almond flour"],
+      "forbidden_terms": ["sugar", "bread", "pasta", "rice", "potatoes"],
+      "alternative_ingredients": ["avocado", "coconut oil", "nuts", "cheese"]
+    },
+    {
+      "restriction_type": "gluten_free",
+      "primary_keywords": ["gluten-free", "celiac", "wheat-free"],
+      "substitute_terms": ["almond flour", "rice flour", "gluten-free pasta"],
+      "forbidden_terms": ["wheat", "barley", "rye", "regular flour"],
+      "alternative_ingredients": ["quinoa", "rice", "corn", "oats"]
+    }
+  ],
+
+  "platform_optimization": {
+    "instagram": {
+      "optimal_hashtag_count": 8,
+      "visual_keywords": ["colorful", "beautiful", "aesthetic", "styled"],
+      "engagement_phrases": ["Double tap if you agree", "Save for later", "Tag someone who needs this"],
+      "story_keywords": ["behind the scenes", "process", "quick tip"]
+    },
+    "tiktok": {
+      "viral_indicators": ["hack", "secret", "viral", "trending", "everyone's making"],
+      "hook_phrases": ["Wait until you see this", "This changed everything", "POV:", "Tell me why"],
+      "challenge_keywords": ["challenge", "trend", "try this", "rate my"]
+    },
+    "pinterest": {
+      "pin_title_format": "[ADJECTIVE] [DISH] Recipe - [BENEFIT/TIME]",
+      "description_keywords": ["recipe", "how to make", "easy", "best", "perfect"],
+      "seasonal_boost": ["holiday", "seasonal", "occasion"]
+    }
+  },
+
+  "trend_keywords": [
+    "viral recipe", "trending", "everyone's making", "hack", "secret ingredient",
+    "game changer", "mind-blowing", "revolutionary", "latest obsession"
+  ],
+
+  "viral_indicators": [
+    "this is everywhere", "can't stop making", "addicted to", "obsessed",
+    "everyone needs to try", "going viral", "trending recipe"
+  ],
+
+  "content_templates": {
+    "recipe_intro": "This {adjective} {dish} recipe is perfect for {occasion/time}",
+    "ingredient_highlight": "The secret ingredient that makes this {dish} amazing",
+    "technique_focus": "Master this {technique} for perfect {dish} every time",
+    "dietary_adaptation": "How to make {dish} {dietary_restriction} without sacrificing flavor"
+  },
+
+  "call_to_actions": [
+    "Save this recipe for later",
+    "Tag someone who needs to try this",
+    "Let me know how yours turned out",
+    "What's your favorite way to make this?",
+    "Drop a 🔥 if you're making this tonight",
+    "Follow for more easy recipes"
+  ],
+
+  "engagement_phrases": [
+    "Recipe in comments",
+    "Full recipe on my profile",
+    "Swipe for the recipe",
+    "Links in bio for ingredients",
+    "Comment 'RECIPE' for the link"
+  ]
+}

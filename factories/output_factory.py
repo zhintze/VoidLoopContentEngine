@@ -15,31 +15,47 @@ from services.instagram_api import InstagramAPIConfig
 from services.pinterest_api import PinterestAPIConfig
 from services.facebook_api import FacebookAPIConfig
 from services.twitter_api import TwitterAPIConfig
+from services.trend_template_integrator import TrendTemplateIntegrator
+from services.trend_scraper import TrendScraper
 
 
 class OutputFactory:
     def __init__(self, account: Account, offline: bool = False, platform: str = "blog", 
-                 auto_post: bool = False):
+                 auto_post: bool = False, use_trends: bool = True):
         self.account = account
         self.offline = offline
         self.platform = platform
         self.auto_post = auto_post
+        self.use_trends = use_trends
         
         # Select template based on platform
-        if platform == "instagram":
-            template_id = f"{account.template_id}_instagram"
+        # Check if template_id already has platform suffix
+        base_template_id = account.template_id
+        if base_template_id.endswith(f"_{platform}"):
+            template_id = base_template_id
+        elif platform == "instagram":
+            template_id = f"{base_template_id}_instagram"
         elif platform == "pinterest":
-            template_id = f"{account.template_id}_pinterest"
+            template_id = f"{base_template_id}_pinterest"
         elif platform == "facebook":
-            template_id = f"{account.template_id}_facebook"
+            template_id = f"{base_template_id}_facebook"
         elif platform == "twitter":
-            template_id = f"{account.template_id}_twitter"
+            template_id = f"{base_template_id}_twitter"
         else:
-            template_id = account.template_id
+            template_id = base_template_id
             
         self.template_path = Path("templates") / f"{template_id}.j2"
         self.output_dir = Path("output") / datetime.now().strftime("%Y-%m-%d") / account.name
         self.template = load_template_config(template_id)
+        
+        # Initialize trend integration if enabled
+        self.trend_integrator = None
+        self.trend_scraper = None
+        if use_trends:
+            self.trend_integrator = TrendTemplateIntegrator()
+            # Only initialize scraper if not in offline mode
+            if not offline:
+                self.trend_scraper = TrendScraper(theme_id=account.theme_id)
         
         # Initialize API clients if auto_post is enabled
         self.instagram_api = None
@@ -64,11 +80,62 @@ class OutputFactory:
 
     def generate_prompt(self) -> str:
         template = self.load_template()
-        return template.render(
-            keywords=self.account.keywords,
-            tone=self.account.tone,
-            hashtags=self.account.hashtags
-        )
+        
+        # Get base context from account
+        base_context = self._get_base_context()
+        
+        # Enhance with trends if enabled
+        if self.use_trends and self.trend_integrator:
+            enhanced_context = self._enhance_context_with_trends(base_context)
+            return template.render(**enhanced_context)
+        else:
+            return template.render(**base_context)
+    
+    def _get_base_context(self) -> Dict[str, Any]:
+        """Get base template context from account"""
+        # Use theme-aware methods if available, fallback to legacy
+        if hasattr(self.account, 'get_theme_keywords'):
+            keywords = self.account.get_theme_keywords(self.platform)
+            hashtags = self.account.get_theme_hashtags(self.platform)
+        else:
+            keywords = self.account.keywords
+            hashtags = self.account.hashtags
+        
+        return {
+            'keywords': keywords,
+            'tone': self.account.tone,
+            'hashtags': hashtags,
+            'platform': self.platform,
+            'account_name': self.account.name,
+            'site': self.account.site
+        }
+    
+    def _enhance_context_with_trends(self, base_context: Dict[str, Any]) -> Dict[str, Any]:
+        """Enhance context with trend data"""
+        try:
+            # Get trend preferences from account
+            trend_preferences = None
+            if hasattr(self.account, 'theme_preferences'):
+                trend_preferences = {
+                    'categories': self.account.theme_preferences.primary_categories,
+                    'min_score': 60.0,  # Only high-scoring trends
+                    'dietary_focus': self.account.theme_preferences.dietary_focus
+                }
+            
+            # Enhance context using trend integrator
+            enhanced_context = self.trend_integrator.enhance_template_context(
+                base_context=base_context,
+                platform=self.platform,
+                trend_preferences=trend_preferences
+            )
+            
+            print(f"🔥 Enhanced with {len(enhanced_context.get('trend_insights', {}).get('trending_keywords', []))} trending keywords")
+            
+            return enhanced_context
+            
+        except Exception as e:
+            print(f"⚠️  Trend enhancement failed: {e}. Using base context.")
+            return base_context
 
     def call_gpt(self, prompt: str) -> tuple[str, dict]:
         from openai import OpenAI

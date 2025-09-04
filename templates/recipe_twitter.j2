@@ -11,6 +11,20 @@ Keywords to naturally include:
 - {{ kw }}
 {% endfor %}
 
+{% if trend_insights %}
+🔥 TRENDING NOW: Focus on these hot topics:
+{% for trending_kw in trend_insights.trending_keywords %}
+- {{ trending_kw }} {% if loop.index <= 2 %}⭐{% endif %}
+{% endfor %}
+
+{% if trend_insights.growth_potential %}
+📈 Growth Opportunities:
+{% for item in trend_insights.growth_potential %}
+- {{ item.keyword }} (+{{ item.growth_rate }}% growth)
+{% endfor %}
+{% endif %}
+{% endif %}
+
 Twitter Optimization Strategy:
 - Lead with an emoji or attention-grabbing phrase
 - Include recipe name and 1 compelling benefit
@@ -18,6 +32,7 @@ Twitter Optimization Strategy:
 - Use action words that create urgency or excitement
 - Add 1-2 key ingredients that sound appealing
 - Keep language concise and impactful
+{% if trend_insights %}- Leverage trending keywords for maximum reach{% endif %}
 
 Tweet Structure:
 1. Hook (emoji + question/statement) 
@@ -28,5 +43,12 @@ Tweet Structure:
 
 Hashtags (limit to 3-4):
 {{ hashtags | join(" ") }} #RecipeOfTheDay #Cooking
+
+{% if content_suggestions %}
+💡 Trend-Driven Content Ideas:
+{% for suggestion in content_suggestions %}
+- {{ suggestion }}
+{% endfor %}
+{% endif %}
 
 Focus on creating immediate appeal and encouraging retweets through concise, impactful language.

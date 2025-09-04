@@ -9,7 +9,16 @@ from services.instagram_api import InstagramAPIConfig
 from services.pinterest_api import PinterestAPIConfig
 from services.facebook_api import FacebookAPIConfig
 from services.twitter_api import TwitterAPIConfig
+from services.trend_scraper import TrendScraper
+from services.trend_analyzer import TrendAnalyzer
+from services.trend_filter import RecipeTrendFilter
+from services.trend_scheduler import TrendScheduler
+from models.trend import TrendCategory
 import os
+import json
+import asyncio
+import signal
+import sys
 load_dotenv()
 
 
@@ -399,6 +408,437 @@ def setup_env():
     typer.echo()
     
     typer.echo("💡 Add these to your .env file or export them as environment variables")
+
+# ===== TREND MANAGEMENT COMMANDS =====
+
+@app.command()
+def scrape_trends(
+    geo: str = typer.Option("US", help="Geographic location (US, GB, CA, etc.)"),
+    timeframe: str = typer.Option("today 7-d", help="Time range (today 1-d, today 7-d, today 1-m)"),
+    max_keywords: int = typer.Option(50, help="Maximum keywords to collect"),
+    quick: bool = typer.Option(False, help="Quick scrape (trending topics only)")
+):
+    """Scrape food/recipe trends from Google Trends."""
+    typer.echo("🔍 Starting trend scraping...")
+    
+    try:
+        scraper = TrendScraper()
+        
+        if quick:
+            trends = scraper.scrape_trending_topics_only(geo=geo, limit=max_keywords)
+            typer.echo(f"📈 Found {len(trends)} trending topics:")
+        else:
+            all_trends = scraper.scrape_all_trends(geo=geo, timeframe=timeframe, max_keywords=max_keywords)
+            total_trends = sum(len(trends) for trends in all_trends.values())
+            typer.echo(f"📊 Comprehensive scrape complete! {total_trends} total trends found")
+            
+            for source, trends in all_trends.items():
+                typer.echo(f"  📋 {source}: {len(trends)} trends")
+            
+            trends = []
+            for trend_list in all_trends.values():
+                trends.extend(trend_list)
+        
+        # Show top trends
+        if trends:
+            typer.echo("\n🔥 Top Trending Keywords:")
+            for i, trend in enumerate(trends[:10], 1):
+                growth_emoji = "📈" if trend.is_rising else "📉"
+                typer.echo(f"  {i:2d}. {trend.keyword} ({trend.category.value}) "
+                          f"- Score: {trend.score.current_score:.1f} {growth_emoji}")
+        
+        typer.echo(f"\n✅ Trends saved to database")
+        
+    except Exception as e:
+        typer.echo(f"❌ Error scraping trends: {e}")
+
+@app.command()
+def list_trends(
+    category: str = typer.Option(None, help="Filter by category"),
+    limit: int = typer.Option(20, help="Number of trends to show"),
+    min_score: float = typer.Option(0.0, help="Minimum trend score"),
+    rising_only: bool = typer.Option(False, help="Show only rising trends")
+):
+    """List current trends in the database."""
+    try:
+        scraper = TrendScraper()
+        
+        if rising_only:
+            trends = scraper.trend_storage.get_rising_trends(hours=48, limit=limit)
+            typer.echo("📈 Rising Trends (Last 48 Hours):")
+        else:
+            # Convert category string to enum if provided
+            category_filter = None
+            if category:
+                try:
+                    category_filter = TrendCategory(category.lower())
+                except ValueError:
+                    typer.echo(f"❌ Invalid category: {category}")
+                    typer.echo(f"Valid categories: {', '.join([c.value for c in TrendCategory])}")
+                    return
+            
+            trends = scraper.trend_storage.get_trending_keywords(
+                category=category_filter, 
+                min_score=min_score, 
+                limit=limit
+            )
+            title = f"📊 Current Trends"
+            if category_filter:
+                title += f" ({category_filter.value})"
+            if min_score > 0:
+                title += f" (Score ≥ {min_score})"
+            typer.echo(title + ":")
+        
+        if not trends:
+            typer.echo("No trends found matching your criteria.")
+            return
+        
+        for i, trend in enumerate(trends, 1):
+            growth_emoji = "📈" if trend.is_rising else "📉"
+            growth_text = f"+{trend.score.growth_rate:.1f}%" if trend.score.growth_rate > 0 else f"{trend.score.growth_rate:.1f}%"
+            
+            typer.echo(f"{i:2d}. {trend.keyword}")
+            typer.echo(f"    Category: {trend.category.value} | Score: {trend.score.current_score:.1f} | Growth: {growth_text} {growth_emoji}")
+            typer.echo(f"    Updated: {trend.last_updated.strftime('%Y-%m-%d %H:%M')}")
+            
+            if trend.related_keywords:
+                related = ', '.join(trend.related_keywords[:3])
+                typer.echo(f"    Related: {related}")
+            typer.echo()
+            
+    except Exception as e:
+        typer.echo(f"❌ Error listing trends: {e}")
+
+@app.command()
+def analyze_trends(
+    category: str = typer.Option(None, help="Analyze specific category"),
+    days: int = typer.Option(7, help="Analysis period in days"),
+    export: str = typer.Option(None, help="Export analysis to file (JSON)")
+):
+    """Analyze trend performance and generate insights."""
+    try:
+        scraper = TrendScraper()
+        analyzer = TrendAnalyzer()
+        
+        # Get trends for analysis
+        if category:
+            try:
+                category_filter = TrendCategory(category.lower())
+                trends = scraper.trend_storage.get_trending_keywords(category=category_filter, limit=100)
+                typer.echo(f"📊 Analyzing {category_filter.value} trends...")
+            except ValueError:
+                typer.echo(f"❌ Invalid category: {category}")
+                return
+        else:
+            trends = scraper.trend_storage.get_trending_keywords(limit=100)
+            typer.echo("📊 Analyzing all trends...")
+        
+        if not trends:
+            typer.echo("No trends found for analysis.")
+            return
+        
+        # Perform analysis
+        analysis = analyzer.analyze_trends(trends)
+        
+        # Display key insights
+        typer.echo(f"\n🔍 Analysis Results ({analysis['total_trends']} trends analyzed):")
+        typer.echo(f"   Average Score: {analysis['score_distribution']['mean']:.1f}")
+        typer.echo(f"   Score Range: {analysis['score_distribution']['min']:.1f} - {analysis['score_distribution']['max']:.1f}")
+        
+        # Growth analysis
+        growth = analysis['growth_analysis']
+        typer.echo(f"\n📈 Growth Patterns:")
+        typer.echo(f"   Rising: {growth['rising_trends']} trends")
+        typer.echo(f"   Declining: {growth['declining_trends']} trends")
+        typer.echo(f"   Average Growth Rate: {growth['avg_growth_rate']:.1f}%")
+        
+        # Top performers
+        typer.echo(f"\n🏆 Top Performers:")
+        for i, performer in enumerate(analysis['top_performers'][:5], 1):
+            typer.echo(f"   {i}. {performer['keyword']} - Score: {performer['current_score']:.1f} "
+                      f"({performer['type']})")
+        
+        # Key insights
+        if analysis['insights']:
+            typer.echo(f"\n💡 Key Insights:")
+            for insight in analysis['insights']:
+                typer.echo(f"   • {insight}")
+        
+        # Recommendations
+        if analysis['recommendations']:
+            typer.echo(f"\n🎯 Recommendations:")
+            for rec in analysis['recommendations']:
+                typer.echo(f"   • {rec}")
+        
+        # Export if requested
+        if export:
+            export_path = Path(export)
+            export_path.write_text(json.dumps(analysis, indent=2, default=str))
+            typer.echo(f"\n💾 Analysis exported to {export_path}")
+        
+    except Exception as e:
+        typer.echo(f"❌ Error analyzing trends: {e}")
+
+@app.command()
+def generate_report(
+    time_period: str = typer.Option("last_7_days", help="Report time period"),
+    output_file: str = typer.Option(None, help="Save report to file")
+):
+    """Generate a comprehensive trend report."""
+    try:
+        scraper = TrendScraper()
+        analyzer = TrendAnalyzer()
+        
+        # Get trends for report
+        trends = scraper.trend_storage.get_trending_keywords(limit=100)
+        
+        if not trends:
+            typer.echo("No trends available for report generation.")
+            return
+        
+        # Generate report
+        typer.echo("📄 Generating comprehensive trend report...")
+        report = analyzer.generate_trend_report(trends, time_period)
+        
+        # Display report summary
+        typer.echo(f"\n📊 Trend Report - {report.time_period}")
+        typer.echo(f"Generated: {report.generated_at.strftime('%Y-%m-%d %H:%M:%S')}")
+        typer.echo(f"Report ID: {report.report_id}")
+        
+        typer.echo(f"\n🔥 Top Keywords ({len(report.top_keywords)}):")
+        for i, trend in enumerate(report.top_keywords[:5], 1):
+            typer.echo(f"   {i}. {trend.keyword} - {trend.score.current_score:.1f}")
+        
+        typer.echo(f"\n📈 Rising Trends ({len(report.rising_trends)}):")
+        for i, trend in enumerate(report.rising_trends[:5], 1):
+            typer.echo(f"   {i}. {trend.keyword} - +{trend.score.growth_rate:.1f}%")
+        
+        typer.echo(f"\n📊 Category Breakdown:")
+        for category, count in list(report.category_breakdown.items())[:5]:
+            category_name = category.value if hasattr(category, 'value') else str(category)
+            typer.echo(f"   {category_name}: {count}")
+        
+        if report.key_insights:
+            typer.echo(f"\n💡 Key Insights:")
+            for insight in report.key_insights:
+                typer.echo(f"   • {insight}")
+        
+        if report.content_opportunities:
+            typer.echo(f"\n🎯 Content Opportunities:")
+            for opportunity in report.content_opportunities:
+                typer.echo(f"   • {opportunity}")
+        
+        # Save report if requested
+        if output_file:
+            report_data = {
+                "report_id": report.report_id,
+                "generated_at": report.generated_at.isoformat(),
+                "time_period": report.time_period,
+                "summary": {
+                    "total_keywords": len(report.top_keywords),
+                    "rising_trends": len(report.rising_trends),
+                    "declining_trends": len(report.declining_trends)
+                },
+                "top_keywords": [{"keyword": t.keyword, "score": t.score.current_score} for t in report.top_keywords[:10]],
+                "rising_trends": [{"keyword": t.keyword, "growth_rate": t.score.growth_rate} for t in report.rising_trends[:10]],
+                "category_breakdown": {str(k): v for k, v in report.category_breakdown.items()},
+                "insights": report.key_insights,
+                "opportunities": report.content_opportunities,
+                "recommended_keywords": report.recommended_keywords
+            }
+            
+            output_path = Path(output_file)
+            output_path.write_text(json.dumps(report_data, indent=2))
+            typer.echo(f"\n💾 Full report saved to {output_path}")
+        
+    except Exception as e:
+        typer.echo(f"❌ Error generating report: {e}")
+
+@app.command()
+def trend_stats():
+    """Show trend database statistics."""
+    try:
+        scraper = TrendScraper()
+        summary = scraper.get_trend_summary()
+        
+        typer.echo("📊 Trend Database Statistics:")
+        typer.echo(f"   Total Keywords: {summary['database_stats']['total_keywords']}")
+        typer.echo(f"   Total Reports: {summary['database_stats']['total_reports']}")
+        typer.echo(f"   Account Profiles: {summary['database_stats']['account_profiles']}")
+        typer.echo(f"   Categories Tracked: {summary['categories_tracked']}")
+        
+        if summary['database_stats']['avg_score'] > 0:
+            typer.echo(f"   Average Score: {summary['database_stats']['avg_score']:.1f}")
+        
+        typer.echo(f"\n🔥 Top Keywords:")
+        for i, keyword in enumerate(summary['top_keywords'][:5], 1):
+            typer.echo(f"   {i}. {keyword}")
+        
+        typer.echo(f"\n📈 Rising Keywords:")
+        for i, keyword in enumerate(summary['rising_keywords'][:5], 1):
+            typer.echo(f"   {i}. {keyword}")
+        
+    except Exception as e:
+        typer.echo(f"❌ Error getting trend stats: {e}")
+
+@app.command()
+def cleanup_trends(
+    days: int = typer.Option(30, help="Remove trends older than N days"),
+    confirm: bool = typer.Option(False, "--yes", help="Skip confirmation")
+):
+    """Clean up old trend data."""
+    try:
+        scraper = TrendScraper()
+        
+        if not confirm:
+            typer.confirm(f"Remove trends older than {days} days?", abort=True)
+        
+        removed = scraper.cleanup_old_trends(days)
+        typer.echo(f"✅ Cleaned up {removed} old trend records")
+        
+    except typer.Abort:
+        typer.echo("Cleanup cancelled.")
+    except Exception as e:
+        typer.echo(f"❌ Error cleaning up trends: {e}")
+
+@app.command()
+def start_scheduler(
+    data_dir: str = typer.Option("data/trends", help="Trend data directory"),
+    daemon: bool = typer.Option(False, help="Run in background (daemon mode)")
+):
+    """Start the automated trend scheduler."""
+    if daemon:
+        typer.echo("❌ Daemon mode not implemented yet. Run without --daemon flag.")
+        return
+    
+    typer.echo("🚀 Starting trend scheduler...")
+    typer.echo("Press Ctrl+C to stop the scheduler")
+    
+    try:
+        scheduler = TrendScheduler(data_dir)
+        
+        # Setup signal handling for graceful shutdown
+        def signal_handler(signum, frame):
+            typer.echo("\n🛑 Received shutdown signal, stopping scheduler...")
+            scheduler.stop()
+            sys.exit(0)
+        
+        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGTERM, signal_handler)
+        
+        # Run the scheduler
+        asyncio.run(scheduler.run_scheduler_loop())
+        
+    except KeyboardInterrupt:
+        typer.echo("\n✅ Scheduler stopped")
+    except Exception as e:
+        typer.echo(f"❌ Error running scheduler: {e}")
+
+@app.command()
+def scheduler_status():
+    """Show status of all scheduled trend jobs."""
+    try:
+        scheduler = TrendScheduler()
+        scheduler.start()
+        
+        status = scheduler.get_job_status()
+        
+        typer.echo("📅 Trend Scheduler Status:")
+        typer.echo("=" * 50)
+        
+        for job_id, info in status.items():
+            enabled_status = "✅ Enabled" if info['enabled'] else "❌ Disabled"
+            typer.echo(f"\n🔹 {info['name']} ({job_id})")
+            typer.echo(f"   Status: {enabled_status}")
+            typer.echo(f"   Description: {info['description']}")
+            
+            if info['next_run']:
+                next_run = info['next_run'][:19]  # Remove milliseconds
+                typer.echo(f"   Next Run: {next_run}")
+            else:
+                typer.echo(f"   Next Run: Not scheduled")
+            
+            if info['last_run']:
+                last_run = info['last_run'][:19]  # Remove milliseconds
+                typer.echo(f"   Last Run: {last_run}")
+                typer.echo(f"   Last Status: {info['status']}")
+            else:
+                typer.echo(f"   Last Run: Never")
+        
+        scheduler.stop()
+        
+    except Exception as e:
+        typer.echo(f"❌ Error getting scheduler status: {e}")
+
+@app.command()
+def pause_schedule(job_id: str):
+    """Pause a specific scheduled job."""
+    try:
+        scheduler = TrendScheduler()
+        scheduler.start()
+        
+        # Check if job exists
+        status = scheduler.get_job_status()
+        if job_id not in status:
+            typer.echo(f"❌ Job '{job_id}' not found")
+            typer.echo(f"Available jobs: {', '.join(status.keys())}")
+            scheduler.stop()
+            return
+        
+        scheduler.pause_job(job_id)
+        typer.echo(f"⏸️  Paused job: {job_id}")
+        
+        scheduler.stop()
+        
+    except Exception as e:
+        typer.echo(f"❌ Error pausing job: {e}")
+
+@app.command()
+def resume_schedule(job_id: str):
+    """Resume a paused scheduled job."""
+    try:
+        scheduler = TrendScheduler()
+        scheduler.start()
+        
+        # Check if job exists
+        status = scheduler.get_job_status()
+        if job_id not in status:
+            typer.echo(f"❌ Job '{job_id}' not found")
+            typer.echo(f"Available jobs: {', '.join(status.keys())}")
+            scheduler.stop()
+            return
+        
+        scheduler.resume_job(job_id)
+        typer.echo(f"▶️  Resumed job: {job_id}")
+        
+        scheduler.stop()
+        
+    except Exception as e:
+        typer.echo(f"❌ Error resuming job: {e}")
+
+@app.command()
+def run_job(job_id: str):
+    """Trigger a scheduled job to run immediately."""
+    try:
+        scheduler = TrendScheduler()
+        scheduler.start()
+        
+        # Check if job exists
+        status = scheduler.get_job_status()
+        if job_id not in status:
+            typer.echo(f"❌ Job '{job_id}' not found")
+            typer.echo(f"Available jobs: {', '.join(status.keys())}")
+            scheduler.stop()
+            return
+        
+        scheduler.run_job_now(job_id)
+        typer.echo(f"🚀 Triggered job: {job_id}")
+        typer.echo("Check scheduler status to see execution results")
+        
+        scheduler.stop()
+        
+    except Exception as e:
+        typer.echo(f"❌ Error triggering job: {e}")
 
 if __name__ == "__main__":
     app()

@@ -4,6 +4,16 @@ description = "Generates Twitter/X-optimized posts for recipe content"
 temperature = 0.8
 model = "gpt-3.5-turbo"
 
+# Trend integration settings
+use_trends = true
+max_trend_keywords = 2
+platform_optimization = true
+
+[trend_preferences]
+min_score = 40.0
+categories = ["quick_meals", "healthy_eating", "viral_recipes", "comfort_food"]
+exclude_keywords = ["alcohol", "wine", "beer"]
+
 [schedule]
 frequency = "daily"
 time = "12:00"

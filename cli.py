@@ -100,7 +100,8 @@ def run_account(
         account_name: str,
         platform: str = typer.Option("blog", help="Platform to generate for: blog, instagram, pinterest, facebook, twitter"),
         offline: bool = typer.Option(False, "--offline", help="Run without calling the OpenAI API"),
-        auto_post: bool = typer.Option(False, "--auto-post", help="Automatically post to the platform")
+        auto_post: bool = typer.Option(False, "--auto-post", help="Automatically post to the platform"),
+        use_trends: bool = typer.Option(True, "--trends/--no-trends", help="Use trending topics to enhance content")
 ):
     """Run the full content generation flow for a given account."""
     account_path = ACCOUNTS_DIR / f"{account_name}.toml"
@@ -117,8 +118,11 @@ def run_account(
 
     try:
         action = "Generating and posting" if auto_post else "Generating"
-        typer.echo(f"{action} {platform} content for account: {account.name}")
-        factory = OutputFactory(account, offline=offline, platform=platform, auto_post=auto_post)
+        trend_status = "with trending topics" if use_trends and not offline else "without trends"
+        typer.echo(f"{action} {platform} content for account: {account.name} ({trend_status})")
+        
+        factory = OutputFactory(account, offline=offline, platform=platform, 
+                              auto_post=auto_post, use_trends=use_trends)
         factory.run()
     except Exception as e:
         typer.echo(f"Error during content generation: {e}")

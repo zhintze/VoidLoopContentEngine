@@ -224,52 +224,55 @@ class TrendTemplateIntegrator:
     def _get_relevant_trends(self, platform: str, 
                            preferences: Optional[Dict] = None) -> List[TrendKeyword]:
         """Get relevant trends based on platform and preferences"""
-        # This would typically fetch from TrendStorage/TrendService
-        # For now, return mock data to demonstrate integration
-        
-        from models.trend import TrendScore, PlatformMetrics, TrendSource
-        from datetime import datetime
-        
-        mock_trends = [
-            TrendKeyword(
-                keyword="air fryer recipes",
-                category=TrendCategory.COOKING_TECHNIQUES,
-                score=TrendScore(current_score=85.0, peak_score=90.0, growth_rate=12.5),
-                platform_metrics=[PlatformMetrics(
-                    source=TrendSource.GOOGLE_TRENDS,
-                    engagement_score=85.0,
-                    last_updated=datetime.now()
-                )],
-                first_detected=datetime.now(),
-                last_updated=datetime.now(),
-                is_rising=True
-            ),
-            TrendKeyword(
-                keyword="healthy meal prep",
-                category=TrendCategory.HEALTHY_EATING,
-                score=TrendScore(current_score=72.0, peak_score=75.0, growth_rate=8.2),
-                platform_metrics=[PlatformMetrics(
-                    source=TrendSource.INSTAGRAM,
-                    engagement_score=72.0,
-                    last_updated=datetime.now()
-                )],
-                first_detected=datetime.now(),
-                last_updated=datetime.now(),
-                is_rising=True
-            )
-        ]
-        
-        # Apply preferences filtering if provided
-        if preferences:
-            if 'categories' in preferences:
-                preferred_categories = preferences['categories']
-                mock_trends = [t for t in mock_trends if t.category in preferred_categories]
+        try:
+            from models.trend_storage import TrendStorage
             
-            if 'min_score' in preferences:
-                min_score = preferences['min_score']
-                mock_trends = [t for t in mock_trends if t.score.current_score >= min_score]
-        
-        return mock_trends
+            # Get trends from storage
+            storage = TrendStorage()
+            
+            # Apply preferences filtering
+            category_filter = None
+            min_score = 50.0  # Default minimum score
+            limit = 10
+            
+            if preferences:
+                if 'categories' in preferences and preferences['categories']:
+                    # For now, get all trends and filter manually since storage doesn't support multiple categories
+                    pass  # Will filter later
+                if 'min_score' in preferences:
+                    min_score = preferences['min_score']
+            
+            # Get trending keywords
+            trends = storage.get_trending_keywords(
+                category=category_filter,
+                min_score=min_score,
+                limit=limit * 2  # Get more to filter
+            )
+            
+            # Apply additional filtering
+            if preferences and 'categories' in preferences and preferences['categories']:
+                # Convert string categories to TrendCategory enums
+                from models.trend import TrendCategory
+                preferred_cats = []
+                for cat_name in preferences['categories']:
+                    try:
+                        # Try to find matching category
+                        for trend_cat in TrendCategory:
+                            if trend_cat.value.replace('_', ' ').lower() == cat_name.replace('_', ' ').lower():
+                                preferred_cats.append(trend_cat)
+                                break
+                    except:
+                        continue
+                
+                if preferred_cats:
+                    trends = [t for t in trends if t.category in preferred_cats]
+            
+            return trends[:10]  # Return top 10
+            
+        except Exception as e:
+            print(f"Warning: Could not fetch trends from storage: {e}")
+            # Fallback to empty list - content generation will continue without trends
+            return []
     
     def _select_platform_trends(self, trends: List[TrendKeyword], 
                               platform: str) -> List[TrendKeyword]:
